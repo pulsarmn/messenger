@@ -2,19 +2,20 @@ package org.pulsar.messenger.entity;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
 @Data
 @Builder
+@ToString(exclude = "refreshTokens")
+@EqualsAndHashCode(exclude = "refreshTokens")
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -38,4 +39,7 @@ public class User {
     @CreationTimestamp
     @Column(name = "created_at")
     private Instant createdAt;
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<RefreshToken> refreshTokens = new ArrayList<>();
 }

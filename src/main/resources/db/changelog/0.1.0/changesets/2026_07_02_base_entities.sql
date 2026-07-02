@@ -14,10 +14,10 @@ CREATE TABLE IF NOT EXISTS users
 CREATE TABLE IF NOT EXISTS refresh_tokens
 (
     id         UUID PRIMARY KEY,
-    token_hash VARCHAR(128)               NOT NULL,
-    user_id    UUID REFERENCES users (id) NOT NULL,
-    expires_at TIMESTAMP WITH TIME ZONE   NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE   NOT NULL DEFAULT NOW()
+    token_hash VARCHAR(128)                                 NOT NULL,
+    user_id    UUID REFERENCES users (id) ON DELETE CASCADE NOT NULL,
+    expires_at TIMESTAMP WITH TIME ZONE                     NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE                     NOT NULL DEFAULT NOW()
 );
 
 --changeset pulsarmn:create-chats-table
