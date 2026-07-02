@@ -1,11 +1,14 @@
 package org.pulsar.messenger;
 
 
-import static java.lang.IO.println;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+
+@SpringBootApplication
 public class MessengerApplication {
 
     static void main() {
-        println("Hello world");
+        SpringApplication.run(MessengerApplication.class);
     }
 }

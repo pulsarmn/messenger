@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      author: pulsarmn
+      relativeToChangelogFile: true
+      file: changesets/2026_07_02_base_entities.sql
