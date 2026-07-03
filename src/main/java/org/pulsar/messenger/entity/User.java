@@ -40,6 +40,11 @@ public class User {
     @Column(name = "created_at")
     private Instant createdAt;
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<RefreshToken> refreshTokens = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<ChatMember> chatMembers = new ArrayList<>();
 }

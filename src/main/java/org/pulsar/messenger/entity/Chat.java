@@ -10,10 +10,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -28,4 +31,8 @@ public class Chat {
     @CreationTimestamp
     @Column(name = "created_at")
     private Instant createdAt;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "chat", orphanRemoval = true)
+    private List<ChatMember> chatMembers = new ArrayList<>();
 }
