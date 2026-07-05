@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: ${MESSENGER_DB_URL}
+    username: ${MESSENGER_DB_USERNAME}
+    password: ${MESSENGER_DB_PASSWORD}
