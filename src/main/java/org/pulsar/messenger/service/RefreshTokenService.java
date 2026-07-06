@@ -37,7 +37,7 @@ public class RefreshTokenService {
     }
 
     private Instant getExpirationTime() {
-        return Instant.now().plus(1, ChronoUnit.MONTHS);
+        return Instant.now().plus(60, ChronoUnit.DAYS);
     }
 
     private byte[] generateRandomBytes() {
