@@ -3,3 +3,8 @@ spring:
     url: ${MESSENGER_DB_URL}
     username: ${MESSENGER_DB_USERNAME}
     password: ${MESSENGER_DB_PASSWORD}
+
+app:
+  jwt:
+    private-key: ${ACCESS_TOKEN_PRIVATE_KEY}
+    public-key: ${ACCESS_TOKEN_PUBLIC_KEY}
