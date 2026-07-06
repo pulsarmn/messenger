@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class MessengerApplication {
 
-    static void main() {
-        SpringApplication.run(MessengerApplication.class);
+    static void main(String[] args) {
+        SpringApplication.run(MessengerApplication.class, args);
     }
 }

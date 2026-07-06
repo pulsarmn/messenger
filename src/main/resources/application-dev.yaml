@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5555/dev_database
+    username: developer
+    password: 12345678
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
+app:
+  jwt:
+    private-key: MIG2AgEAMBAGByqGSM49AgEGBSuBBAAiBIGeMIGbAgEBBDACn+hlR8mqmPJIHbCSnYMvQE6VN4GZg2MOtpSkRx9MB8lL7EYFhlCJ2ByjYIDrhPGhZANiAASJASd80ZU1oEsmNDTtXA+T9qWWKRkq/ilQLVrHJtoGHNozdHYqkoddVvvMbIstl9KOpKxIXUwDvbdiMR0xPpaMFvWzo3xUM04P15keeiCs66uK5wWxgNtr6O8pEM7MQHs=
+    public-key: MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAEiQEnfNGVNaBLJjQ07VwPk/allikZKv4pUC1axybaBhzaM3R2KpKHXVb7zGyLLZfSjqSsSF1MA723YjEdMT6WjBb1s6N8VDNOD9eZHnogrOuriucFsYDba+jvKRDOzEB7
