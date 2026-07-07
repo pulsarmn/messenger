@@ -4,6 +4,7 @@ spring-boot-starter-web = { module = 'org.springframework.boot:spring-boot-start
 spring-boot-starter-data-jpa = { module = 'org.springframework.boot:spring-boot-starter-data-jpa' }
 spring-boot-starter-validation = { module = 'org.springframework.boot:spring-boot-starter-validation' }
 spring-boot-starter-liquibase = { module = 'org.springframework.boot:spring-boot-starter-liquibase' }
+spring-boot-starter-test = { module = 'org.springframework.boot:spring-boot-starter-test' }
 
 postgresql-driver = { module = 'org.postgresql:postgresql' }
 bouncy-castle = { module = 'org.bouncycastle:bcprov-jdk18on', version = '1.84' }
