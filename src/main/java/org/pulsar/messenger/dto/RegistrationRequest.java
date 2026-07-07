@@ -12,8 +12,10 @@ public record RegistrationRequest(
         String username,
 
         @NotBlank
+        @Size(min = 8, max = 128)
         String password,
 
         @NotBlank
+        @Size(min = 8, max = 128)
         String passwordConfirmation) {
 }
