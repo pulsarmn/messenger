@@ -5,8 +5,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.pulsar.messenger.dto.ErrorResponse;
 import org.pulsar.messenger.exception.PasswordsMismatchException;
 import org.pulsar.messenger.exception.UserAlreadyExistsException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -17,17 +20,27 @@ import java.time.Instant;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(PasswordsMismatchException.class)
-    public ResponseEntity<ErrorResponse> handlePasswordsMismatch(HttpServletRequest request) {
+    ResponseEntity<ErrorResponse> handlePasswordsMismatch(HttpServletRequest request) {
         return build(HttpStatus.BAD_REQUEST, "Passwords mismatch", request);
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<ErrorResponse> handleUserAlreadyExists(HttpServletRequest request) {
-        return build(HttpStatus.BAD_REQUEST, "User already exists", request);
+    ResponseEntity<ErrorResponse> handleUserAlreadyExists(HttpServletRequest request) {
+        return build(HttpStatus.CONFLICT, "Username is already taken", request);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(HttpServletRequest request) {
+        return build(HttpStatus.BAD_REQUEST, "Invalid body argument", request);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    ResponseEntity<ErrorResponse> handleDataIntegrityViolation(HttpServletRequest request) {
+        return build(HttpStatus.CONFLICT, "Username is already taken", request);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleException(HttpServletRequest request) {
+    ResponseEntity<ErrorResponse> handleException(Exception e, HttpServletRequest request) {
         return build(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error", request);
     }
 
