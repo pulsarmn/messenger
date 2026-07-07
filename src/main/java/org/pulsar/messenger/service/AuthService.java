@@ -9,7 +9,6 @@ import org.pulsar.messenger.exception.PasswordsMismatchException;
 import org.pulsar.messenger.exception.UserAlreadyExistsException;
 import org.pulsar.messenger.mapper.UserMapper;
 import org.pulsar.messenger.repository.UserRepository;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,15 +25,15 @@ public class AuthService {
 
     @Transactional
     public AuthResponse register(RegistrationRequest registrationRequest) {
+        if (userRepository.existsByUsername(registrationRequest.username())) {
+            throw new UserAlreadyExistsException("User with username '%s' already exists".formatted(registrationRequest.username()));
+        }
+
         validatePasswordsMatch(registrationRequest);
         User user = mapToUser(registrationRequest);
 
-        try {
-            User savedUser = userRepository.saveAndFlush(user);
-            return tokenPairGenerator.create(savedUser);
-        } catch (DataIntegrityViolationException e) {
-            throw new UserAlreadyExistsException("User with username '%s' already exists".formatted(registrationRequest.username()));
-        }
+        User savedUser = userRepository.saveAndFlush(user);
+        return tokenPairGenerator.create(savedUser);
     }
 
     private void validatePasswordsMatch(RegistrationRequest registrationRequest) {
