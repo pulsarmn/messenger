@@ -9,6 +9,7 @@ import com.nimbusds.jose.jwk.Curve;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
+import org.pulsar.messenger.exception.TokenGenerationException;
 import org.springframework.stereotype.Component;
 
 import java.security.interfaces.ECPrivateKey;
@@ -32,13 +33,13 @@ public class AccessTokenGenerator {
 
             return token.serialize();
         } catch (JOSEException e) {
-            throw new RuntimeException(e);
+            throw new TokenGenerationException("Failed to sign access token", e);
         }
     }
 
     private JWTClaimsSet convertToClaims(Map<String, Object> payload) {
         JWTClaimsSet.Builder claimsBuilder = new JWTClaimsSet.Builder();
-        payload.forEach(claimsBuilder::claim);
+        if (payload != null) payload.forEach(claimsBuilder::claim);
         return claimsBuilder.build();
     }
 }
