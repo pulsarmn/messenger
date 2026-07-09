@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.pulsar.messenger.dto.ErrorResponse;
 import org.pulsar.messenger.exception.PasswordsMismatchException;
 import org.pulsar.messenger.exception.UserAlreadyExistsException;
+import org.pulsar.messenger.exception.UserNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -27,6 +28,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserAlreadyExistsException.class)
     ResponseEntity<ErrorResponse> handleUserAlreadyExists(HttpServletRequest request) {
         return build(HttpStatus.CONFLICT, "Username is already taken", request);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    ResponseEntity<ErrorResponse> handleUserNotFound(HttpServletRequest request) {
+        return build(HttpStatus.NOT_FOUND, "User not found", request);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
