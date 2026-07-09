@@ -2,7 +2,7 @@ package org.pulsar.messenger.service;
 
 
 import lombok.RequiredArgsConstructor;
-import org.pulsar.messenger.dto.AuthResponse;
+import org.pulsar.messenger.dto.TokenResponse;
 import org.pulsar.messenger.entity.User;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,11 +23,11 @@ public class TokenPairGenerator {
     private final RefreshTokenService refreshTokenService;
 
     @Transactional
-    public AuthResponse create(User user) {
+    public TokenResponse create(User user) {
         Map<String, Object> claims = getClaims(user);
         String accessToken = accessTokenGenerator.generate(claims);
         String refreshToken = refreshTokenService.create(user);
-        return new AuthResponse(accessToken, refreshToken);
+        return new TokenResponse(accessToken, refreshToken);
     }
 
     private Map<String, Object> getClaims(User user) {

@@ -3,7 +3,7 @@ package org.pulsar.messenger.service;
 
 import lombok.RequiredArgsConstructor;
 import org.pulsar.messenger.dto.AuthRequest;
-import org.pulsar.messenger.dto.AuthResponse;
+import org.pulsar.messenger.dto.TokenResponse;
 import org.pulsar.messenger.dto.RegistrationRequest;
 import org.pulsar.messenger.entity.User;
 import org.pulsar.messenger.exception.PasswordsMismatchException;
@@ -27,7 +27,7 @@ public class AuthService {
     private final RefreshTokenService refreshTokenService;
 
     @Transactional
-    public AuthResponse register(RegistrationRequest registrationRequest) {
+    public TokenResponse register(RegistrationRequest registrationRequest) {
         if (userRepository.existsByUsername(registrationRequest.username())) {
             throw new UserAlreadyExistsException("User with username '%s' already exists".formatted(registrationRequest.username()));
         }
@@ -53,7 +53,7 @@ public class AuthService {
     }
 
     @Transactional
-    public AuthResponse authenticate(AuthRequest authRequest) {
+    public TokenResponse authenticate(AuthRequest authRequest) {
         User user = userRepository.findByUsername(authRequest.username())
                 .orElseThrow(() -> new UserNotFoundException("User with username '%s' not found".formatted(authRequest.username())));
 
@@ -67,7 +67,7 @@ public class AuthService {
     }
 
     @Transactional
-    public AuthResponse refresh(String refreshToken) {
+    public TokenResponse refresh(String refreshToken) {
         User user = refreshTokenService.refresh(refreshToken);
         return tokenPairGenerator.create(user);
     }

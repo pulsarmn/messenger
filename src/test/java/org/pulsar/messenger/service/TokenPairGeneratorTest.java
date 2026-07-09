@@ -1,14 +1,13 @@
 package org.pulsar.messenger.service;
 
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.pulsar.messenger.dto.AuthResponse;
+import org.pulsar.messenger.dto.TokenResponse;
 import org.pulsar.messenger.entity.User;
 
 import java.time.Clock;
@@ -56,9 +55,9 @@ public class TokenPairGeneratorTest {
         doReturn(expectedAccessToken).when(accessTokenGenerator).generate(claims);
         doReturn(expectedRefreshToken).when(refreshTokenService).create(user);
 
-        AuthResponse authResponse = tokenPairGenerator.create(user);
+        TokenResponse tokenResponse = tokenPairGenerator.create(user);
 
-        assertThat(authResponse.accessToken()).isEqualTo(expectedAccessToken);
-        assertThat(authResponse.refreshToken()).isEqualTo(expectedRefreshToken);
+        assertThat(tokenResponse.accessToken()).isEqualTo(expectedAccessToken);
+        assertThat(tokenResponse.refreshToken()).isEqualTo(expectedRefreshToken);
     }
 }
