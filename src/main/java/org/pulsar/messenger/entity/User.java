@@ -1,6 +1,5 @@
 package org.pulsar.messenger.entity;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;

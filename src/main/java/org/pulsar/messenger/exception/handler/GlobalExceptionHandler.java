@@ -1,6 +1,5 @@
 package org.pulsar.messenger.exception.handler;
 
-
 import jakarta.servlet.http.HttpServletRequest;
 import org.pulsar.messenger.dto.ErrorResponse;
 import org.pulsar.messenger.exception.BadCredentialsException;
