@@ -3,6 +3,7 @@ package org.pulsar.messenger.exception.handler;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.pulsar.messenger.dto.ErrorResponse;
+import org.pulsar.messenger.exception.BadCredentialsException;
 import org.pulsar.messenger.exception.PasswordsMismatchException;
 import org.pulsar.messenger.exception.UserAlreadyExistsException;
 import org.pulsar.messenger.exception.UserNotFoundException;
@@ -33,6 +34,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     ResponseEntity<ErrorResponse> handleUserNotFound(HttpServletRequest request) {
         return build(HttpStatus.NOT_FOUND, "User not found", request);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    ResponseEntity<ErrorResponse> handleBadCredentials(HttpServletRequest request) {
+        return build(HttpStatus.BAD_REQUEST, "Bad credentials", request);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

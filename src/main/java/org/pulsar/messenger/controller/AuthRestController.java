@@ -32,4 +32,10 @@ public class AuthRestController {
         AuthResponse authResponse = authService.authenticate(authRequest);
         return ResponseEntity.ok(authResponse);
     }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthResponse> refresh(@RequestBody String refreshToken) {
+        AuthResponse authResponse = authService.refresh(refreshToken);
+        return ResponseEntity.ok(authResponse);
+    }
 }

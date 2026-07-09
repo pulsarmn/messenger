@@ -24,6 +24,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenPairGenerator tokenPairGenerator;
+    private final RefreshTokenService refreshTokenService;
 
     @Transactional
     public AuthResponse register(RegistrationRequest registrationRequest) {
@@ -62,6 +63,12 @@ public class AuthService {
             throw new PasswordsMismatchException("Invalid password");
         }
 
+        return tokenPairGenerator.create(user);
+    }
+
+    @Transactional
+    public AuthResponse refresh(String refreshToken) {
+        User user = refreshTokenService.refresh(refreshToken);
         return tokenPairGenerator.create(user);
     }
 }
