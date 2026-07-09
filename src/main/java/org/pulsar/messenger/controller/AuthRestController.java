@@ -2,6 +2,7 @@ package org.pulsar.messenger.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import org.pulsar.messenger.dto.AuthRequest;
 import org.pulsar.messenger.dto.AuthResponse;
 import org.pulsar.messenger.dto.RegistrationRequest;
 import org.pulsar.messenger.service.AuthService;
@@ -23,6 +24,12 @@ public class AuthRestController {
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Validated @RequestBody RegistrationRequest registrationRequest) {
         AuthResponse authResponse = authService.register(registrationRequest);
+        return ResponseEntity.ok(authResponse);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@Validated @RequestBody AuthRequest authRequest) {
+        AuthResponse authResponse = authService.authenticate(authRequest);
         return ResponseEntity.ok(authResponse);
     }
 }

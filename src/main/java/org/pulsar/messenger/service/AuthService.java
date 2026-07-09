@@ -2,11 +2,13 @@ package org.pulsar.messenger.service;
 
 
 import lombok.RequiredArgsConstructor;
+import org.pulsar.messenger.dto.AuthRequest;
 import org.pulsar.messenger.dto.AuthResponse;
 import org.pulsar.messenger.dto.RegistrationRequest;
 import org.pulsar.messenger.entity.User;
 import org.pulsar.messenger.exception.PasswordsMismatchException;
 import org.pulsar.messenger.exception.UserAlreadyExistsException;
+import org.pulsar.messenger.exception.UserNotFoundException;
 import org.pulsar.messenger.mapper.UserMapper;
 import org.pulsar.messenger.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,5 +49,19 @@ public class AuthService {
     private User mapToUser(RegistrationRequest registrationRequest) {
         String encodedPassword = passwordEncoder.encode(registrationRequest.password());
         return userMapper.mapToUser(registrationRequest, encodedPassword);
+    }
+
+    @Transactional
+    public AuthResponse authenticate(AuthRequest authRequest) {
+        User user = userRepository.findByUsername(authRequest.username())
+                .orElseThrow(() -> new UserNotFoundException("User with username '%s' not found".formatted(authRequest.username())));
+
+        String rawPassword = authRequest.password();
+        String passwordHash = user.getPasswordHash();
+        if (!passwordEncoder.matches(rawPassword, passwordHash)) {
+            throw new PasswordsMismatchException("Invalid password");
+        }
+
+        return tokenPairGenerator.create(user);
     }
 }
