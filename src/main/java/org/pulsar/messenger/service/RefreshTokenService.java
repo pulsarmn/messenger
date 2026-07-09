@@ -8,42 +8,40 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
+import java.time.Clock;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
+import java.util.Objects;
 
 
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService {
 
+    private final Clock clock;
     private final HashService hashService;
-    private final SecureRandom secureRandom = new SecureRandom();
+    private final TokenGenerator tokenGenerator;
     private final RefreshTokenRepository refreshTokenRepository;
 
     private static final int REFRESH_TOKEN_LENGTH = 32;
 
     @Transactional
     public String create(User user) {
-        byte[] refreshTokenBytes = generateRandomBytes();
+        Objects.requireNonNull(user, "User must not be null for refresh token creation");
+
+        byte[] refreshTokenBytes = tokenGenerator.generate(REFRESH_TOKEN_LENGTH);
         String hashedRefreshToken = hashService.hash(refreshTokenBytes);
         RefreshToken refreshToken = RefreshToken.builder()
                 .tokenHash(hashedRefreshToken)
                 .user(user)
                 .expiresAt(getExpirationTime())
                 .build();
-        refreshTokenRepository.save(refreshToken);
+        refreshTokenRepository.saveAndFlush(refreshToken);
         return Base64.getUrlEncoder().encodeToString(refreshTokenBytes);
     }
 
     private Instant getExpirationTime() {
-        return Instant.now().plus(60, ChronoUnit.DAYS);
-    }
-
-    private byte[] generateRandomBytes() {
-        byte[] refreshTokenBytes = new byte[REFRESH_TOKEN_LENGTH];
-        secureRandom.nextBytes(refreshTokenBytes);
-
-        return refreshTokenBytes;
+        return Instant.now(clock).plus(60, ChronoUnit.DAYS);
     }
 }
