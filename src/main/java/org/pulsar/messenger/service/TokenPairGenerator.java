@@ -7,6 +7,7 @@ import org.pulsar.messenger.entity.User;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Clock;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class TokenPairGenerator {
 
+    private final Clock clock;
     private final AccessTokenGenerator accessTokenGenerator;
     private final RefreshTokenService refreshTokenService;
 
@@ -30,9 +32,9 @@ public class TokenPairGenerator {
 
     private Map<String, Object> getClaims(User user) {
         Map<String, Object> claims = new HashMap<>();
-        Instant currentTime = Instant.now();
+        Instant currentTime = Instant.now(clock);
         claims.put("sub", user.getUsername());
-        claims.put("iat", currentTime);
+        claims.put("iat", currentTime.getEpochSecond());
         claims.put("exp", currentTime.plus(15, ChronoUnit.MINUTES).getEpochSecond());
         return claims;
     }
