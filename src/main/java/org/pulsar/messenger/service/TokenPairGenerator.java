@@ -1,7 +1,7 @@
 package org.pulsar.messenger.service;
 
 import lombok.RequiredArgsConstructor;
-import org.pulsar.messenger.dto.TokenResponse;
+import org.pulsar.messenger.dto.response.TokenResponse;
 import org.pulsar.messenger.entity.User;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

@@ -2,7 +2,7 @@ package org.pulsar.messenger.mapper;
 
 
 import org.junit.jupiter.api.Test;
-import org.pulsar.messenger.dto.RegistrationRequest;
+import org.pulsar.messenger.dto.request.RegistrationRequest;
 import org.pulsar.messenger.entity.User;
 
 import static org.assertj.core.api.Assertions.assertThat;

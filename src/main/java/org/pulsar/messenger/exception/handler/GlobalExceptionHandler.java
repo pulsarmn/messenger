@@ -1,7 +1,7 @@
 package org.pulsar.messenger.exception.handler;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.pulsar.messenger.dto.ErrorResponse;
+import org.pulsar.messenger.dto.response.ErrorResponse;
 import org.pulsar.messenger.exception.BadCredentialsException;
 import org.pulsar.messenger.exception.PasswordsMismatchException;
 import org.pulsar.messenger.exception.UserAlreadyExistsException;

@@ -7,7 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.pulsar.messenger.dto.TokenResponse;
+import org.pulsar.messenger.dto.response.TokenResponse;
 import org.pulsar.messenger.entity.User;
 
 import java.time.Clock;

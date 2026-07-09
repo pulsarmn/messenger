@@ -1,4 +1,4 @@
-package org.pulsar.messenger.dto;
+package org.pulsar.messenger.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

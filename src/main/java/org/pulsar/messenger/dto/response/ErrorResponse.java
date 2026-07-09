@@ -1,4 +1,4 @@
-package org.pulsar.messenger.dto;
+package org.pulsar.messenger.dto.response;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

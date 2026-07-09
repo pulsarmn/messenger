@@ -1,9 +1,9 @@
 package org.pulsar.messenger.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.pulsar.messenger.dto.AuthRequest;
-import org.pulsar.messenger.dto.TokenResponse;
-import org.pulsar.messenger.dto.RegistrationRequest;
+import org.pulsar.messenger.dto.request.AuthRequest;
+import org.pulsar.messenger.dto.response.TokenResponse;
+import org.pulsar.messenger.dto.request.RegistrationRequest;
 import org.pulsar.messenger.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
