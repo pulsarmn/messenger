@@ -65,14 +65,14 @@ public class AuthService {
     public TokenResponse authenticate(AuthRequest authRequest) {
         User user = userRepository.findByUsername(authRequest.username())
                 .orElseThrow(() -> new UserNotFoundException("User with username '%s' not found".formatted(authRequest.username())));
+        validatePasswordsMatch(authRequest.password(), user.getPasswordHash());
+        return tokenPairGenerator.createResponse(user);
+    }
 
-        String rawPassword = authRequest.password();
-        String passwordHash = user.getPasswordHash();
+    private void validatePasswordsMatch(String rawPassword, String passwordHash) {
         if (!passwordEncoder.matches(rawPassword, passwordHash)) {
             throw new PasswordsMismatchException("Invalid password");
         }
-
-        return tokenPairGenerator.createResponse(user);
     }
 
     @Transactional
