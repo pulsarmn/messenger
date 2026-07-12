@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserMapper {
 
-    public User mapToUser(RegistrationRequest registrationRequest, String encodedPassword) {
+    public User mapToEntity(RegistrationRequest request, String encodedPassword) {
         return User.builder()
-                .username(registrationRequest.username())
-                .displayName(registrationRequest.username())
+                .username(request.username())
+                .displayName(request.username())
                 .passwordHash(encodedPassword)
                 .build();
     }
