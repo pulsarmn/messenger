@@ -1,10 +1,9 @@
 package org.pulsar.messenger.service;
 
-
 import lombok.RequiredArgsConstructor;
-import org.pulsar.messenger.dto.AuthRequest;
-import org.pulsar.messenger.dto.AuthResponse;
-import org.pulsar.messenger.dto.RegistrationRequest;
+import org.pulsar.messenger.dto.request.AuthRequest;
+import org.pulsar.messenger.dto.request.RegistrationRequest;
+import org.pulsar.messenger.dto.response.TokenResponse;
 import org.pulsar.messenger.entity.User;
 import org.pulsar.messenger.exception.PasswordsMismatchException;
 import org.pulsar.messenger.exception.UserAlreadyExistsException;
@@ -14,6 +13,8 @@ import org.pulsar.messenger.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
 
 
 @Service
@@ -27,33 +28,41 @@ public class AuthService {
     private final RefreshTokenService refreshTokenService;
 
     @Transactional
-    public AuthResponse register(RegistrationRequest registrationRequest) {
-        if (userRepository.existsByUsername(registrationRequest.username())) {
-            throw new UserAlreadyExistsException("User with username '%s' already exists".formatted(registrationRequest.username()));
-        }
+    public TokenResponse register(RegistrationRequest request) {
+        Objects.requireNonNull(request);
+        checkUserExistence(request);
+        validatePasswordsMatch(request);
 
-        validatePasswordsMatch(registrationRequest);
-        User user = mapToUser(registrationRequest);
+        User user = mapToUser(request);
+        user = userRepository.saveAndFlush(user);
 
-        User savedUser = userRepository.saveAndFlush(user);
-        return tokenPairGenerator.create(savedUser);
+        return tokenPairGenerator.createResponse(user);
     }
 
-    private void validatePasswordsMatch(RegistrationRequest registrationRequest) {
-        String password = registrationRequest.password();
-        String passwordConfirmation = registrationRequest.passwordConfirmation();
-        if (password == null || !password.equals(passwordConfirmation)) {
+    private void checkUserExistence(RegistrationRequest request) {
+        String username = request.username();
+        if (userRepository.existsByUsername(username)) {
+            throw new UserAlreadyExistsException("User with username '%s' already exists".formatted(username));
+        }
+    }
+
+    private void validatePasswordsMatch(RegistrationRequest request) {
+        if (!passwordsMatch(request)) {
             throw new PasswordsMismatchException();
         }
     }
 
-    private User mapToUser(RegistrationRequest registrationRequest) {
-        String encodedPassword = passwordEncoder.encode(registrationRequest.password());
-        return userMapper.mapToUser(registrationRequest, encodedPassword);
+    private boolean passwordsMatch(RegistrationRequest request) {
+        return (request.password()).equals(request.passwordConfirmation());
+    }
+
+    private User mapToUser(RegistrationRequest request) {
+        String encodedPassword = passwordEncoder.encode(request.password());
+        return userMapper.mapToEntity(request, encodedPassword);
     }
 
     @Transactional
-    public AuthResponse authenticate(AuthRequest authRequest) {
+    public TokenResponse authenticate(AuthRequest authRequest) {
         User user = userRepository.findByUsername(authRequest.username())
                 .orElseThrow(() -> new UserNotFoundException("User with username '%s' not found".formatted(authRequest.username())));
 
@@ -63,12 +72,12 @@ public class AuthService {
             throw new PasswordsMismatchException("Invalid password");
         }
 
-        return tokenPairGenerator.create(user);
+        return tokenPairGenerator.createResponse(user);
     }
 
     @Transactional
-    public AuthResponse refresh(String refreshToken) {
+    public TokenResponse refresh(String refreshToken) {
         User user = refreshTokenService.refresh(refreshToken);
-        return tokenPairGenerator.create(user);
+        return tokenPairGenerator.createResponse(user);
     }
 }

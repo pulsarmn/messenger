@@ -1,6 +1,5 @@
 package org.pulsar.messenger.service;
 
-
 import org.springframework.stereotype.Component;
 import java.security.SecureRandom;
 

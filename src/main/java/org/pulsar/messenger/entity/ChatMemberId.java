@@ -1,6 +1,5 @@
 package org.pulsar.messenger.entity;
 
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.*;

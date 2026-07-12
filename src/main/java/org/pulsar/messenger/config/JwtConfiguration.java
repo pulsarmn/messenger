@@ -1,6 +1,5 @@
 package org.pulsar.messenger.config;
 
-
 import lombok.RequiredArgsConstructor;
 import org.pulsar.messenger.config.properties.JwtConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

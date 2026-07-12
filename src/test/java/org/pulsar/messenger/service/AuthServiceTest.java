@@ -7,9 +7,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.pulsar.messenger.dto.AuthRequest;
-import org.pulsar.messenger.dto.AuthResponse;
-import org.pulsar.messenger.dto.RegistrationRequest;
+import org.pulsar.messenger.dto.request.AuthRequest;
+import org.pulsar.messenger.dto.response.TokenResponse;
+import org.pulsar.messenger.dto.request.RegistrationRequest;
 import org.pulsar.messenger.entity.User;
 import org.pulsar.messenger.exception.PasswordsMismatchException;
 import org.pulsar.messenger.exception.UserAlreadyExistsException;
@@ -52,15 +52,15 @@ public class AuthServiceTest {
                 .displayName(request.username())
                 .passwordHash("encoded-password")
                 .build();
-        AuthResponse expectedResponse = new AuthResponse("access-token", "refresh-token");
+        TokenResponse expectedResponse = new TokenResponse("access-token", "refresh-token");
 
         doReturn(false).when(userRepository).existsByUsername(request.username());
         doReturn(user.getPasswordHash()).when(passwordEncoder).encode(request.password());
-        doReturn(user).when(userMapper).mapToUser(request, user.getPasswordHash());
+        doReturn(user).when(userMapper).mapToEntity(request, user.getPasswordHash());
         doReturn(user).when(userRepository).saveAndFlush(user);
-        doReturn(expectedResponse).when(tokenPairGenerator).create(user);
+        doReturn(expectedResponse).when(tokenPairGenerator).createResponse(user);
 
-        AuthResponse actualResponse = authService.register(request);
+        TokenResponse actualResponse = authService.register(request);
 
         assertThat(actualResponse).isEqualTo(expectedResponse);
     }
@@ -95,18 +95,18 @@ public class AuthServiceTest {
                 .displayName(authRequest.username())
                 .passwordHash("correct-password-hash")
                 .build();
-        AuthResponse expectedResponse = new AuthResponse("access-token", "refresh-token");
+        TokenResponse expectedResponse = new TokenResponse("access-token", "refresh-token");
 
         doReturn(Optional.of(user)).when(userRepository).findByUsername(authRequest.username());
         doReturn(true).when(passwordEncoder).matches(authRequest.password(), user.getPasswordHash());
-        doReturn(expectedResponse).when(tokenPairGenerator).create(user);
+        doReturn(expectedResponse).when(tokenPairGenerator).createResponse(user);
 
-        AuthResponse actualResponse = authService.authenticate(authRequest);
+        TokenResponse actualResponse = authService.authenticate(authRequest);
 
         assertThat(actualResponse).isEqualTo(expectedResponse);
         verify(userRepository, times(1)).findByUsername(authRequest.username());
         verify(passwordEncoder, times(1)).matches(authRequest.password(), user.getPasswordHash());
-        verify(tokenPairGenerator, times(1)).create(user);
+        verify(tokenPairGenerator, times(1)).createResponse(user);
     }
 
     @Test

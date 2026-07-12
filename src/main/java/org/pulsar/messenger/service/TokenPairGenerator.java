@@ -1,17 +1,18 @@
 package org.pulsar.messenger.service;
 
-
 import lombok.RequiredArgsConstructor;
-import org.pulsar.messenger.dto.AuthResponse;
+import org.pulsar.messenger.common.AccessTokenFactory;
+import org.pulsar.messenger.common.JwtClaims;
+import org.pulsar.messenger.common.RefreshTokenFactory;
+import org.pulsar.messenger.dto.response.TokenResponse;
+import org.pulsar.messenger.entity.RefreshToken;
 import org.pulsar.messenger.entity.User;
+import org.pulsar.messenger.repository.RefreshTokenRepository;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.Clock;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Base64;
 
 
 @Component
@@ -19,23 +20,42 @@ import java.util.Map;
 public class TokenPairGenerator {
 
     private final Clock clock;
-    private final AccessTokenGenerator accessTokenGenerator;
-    private final RefreshTokenService refreshTokenService;
+    private final TokenGenerator tokenGenerator;
+    private final AccessTokenFactory accessTokenFactory;
+    private final RefreshTokenFactory refreshTokenFactory;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-    @Transactional
-    public AuthResponse create(User user) {
-        Map<String, Object> claims = getClaims(user);
-        String accessToken = accessTokenGenerator.generate(claims);
-        String refreshToken = refreshTokenService.create(user);
-        return new AuthResponse(accessToken, refreshToken);
+    public TokenResponse createResponse(User user) {
+        JwtClaims claims = getClaims(user.getUsername());
+        String accessToken = accessTokenFactory.createAccessToken(claims);
+        String refreshToken = createRefreshToken(user);
+        return new TokenResponse(accessToken, refreshToken);
     }
 
-    private Map<String, Object> getClaims(User user) {
-        Map<String, Object> claims = new HashMap<>();
-        Instant currentTime = Instant.now(clock);
-        claims.put("sub", user.getUsername());
-        claims.put("iat", currentTime.getEpochSecond());
-        claims.put("exp", currentTime.plus(15, ChronoUnit.MINUTES).getEpochSecond());
-        return claims;
+    private String createRefreshToken(User user) {
+        byte[] refreshTokenBytes = tokenGenerator.generate(32);
+        RefreshToken refreshToken = refreshTokenFactory.buildRefreshToken(refreshTokenBytes, user);
+        refreshTokenRepository.saveAndFlush(refreshToken);
+        return convertTokenBytes(refreshTokenBytes);
+    }
+
+    private JwtClaims getClaims(String username) {
+        return JwtClaims.builder()
+                .subject(username)
+                .expirationTime(getAccessTokenExpirationTime())
+                .issueTime(getAccessTokenIssueTime())
+                .build();
+    }
+
+    private Instant getAccessTokenExpirationTime() {
+        return Instant.now(clock).plus(15, ChronoUnit.MINUTES);
+    }
+
+    private Instant getAccessTokenIssueTime() {
+        return Instant.now(clock);
+    }
+
+    private String convertTokenBytes(byte[] tokenBytes) {
+        return Base64.getUrlEncoder().encodeToString(tokenBytes);
     }
 }

@@ -1,15 +1,13 @@
 package org.pulsar.messenger.exception.handler;
 
-
 import jakarta.servlet.http.HttpServletRequest;
-import org.pulsar.messenger.dto.ErrorResponse;
+import org.pulsar.messenger.dto.response.ErrorResponse;
 import org.pulsar.messenger.exception.BadCredentialsException;
 import org.pulsar.messenger.exception.PasswordsMismatchException;
 import org.pulsar.messenger.exception.UserAlreadyExistsException;
 import org.pulsar.messenger.exception.UserNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
