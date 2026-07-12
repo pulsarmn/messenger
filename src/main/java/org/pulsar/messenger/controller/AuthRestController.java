@@ -2,6 +2,7 @@ package org.pulsar.messenger.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.pulsar.messenger.dto.request.AuthRequest;
+import org.pulsar.messenger.dto.request.RefreshTokenRequest;
 import org.pulsar.messenger.dto.response.TokenResponse;
 import org.pulsar.messenger.dto.request.RegistrationRequest;
 import org.pulsar.messenger.service.AuthService;
@@ -33,8 +34,8 @@ public class AuthRestController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<TokenResponse> refresh(@RequestBody String refreshToken) {
-        TokenResponse tokenResponse = authService.refresh(refreshToken);
+    public ResponseEntity<TokenResponse> refresh(@Validated @RequestBody RefreshTokenRequest request) {
+        TokenResponse tokenResponse = authService.refresh(request);
         return ResponseEntity.ok(tokenResponse);
     }
 }

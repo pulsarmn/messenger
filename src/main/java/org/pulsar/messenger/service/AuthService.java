@@ -2,8 +2,10 @@ package org.pulsar.messenger.service;
 
 import lombok.RequiredArgsConstructor;
 import org.pulsar.messenger.dto.request.AuthRequest;
+import org.pulsar.messenger.dto.request.RefreshTokenRequest;
 import org.pulsar.messenger.dto.request.RegistrationRequest;
 import org.pulsar.messenger.dto.response.TokenResponse;
+import org.pulsar.messenger.entity.RefreshToken;
 import org.pulsar.messenger.entity.User;
 import org.pulsar.messenger.exception.PasswordsMismatchException;
 import org.pulsar.messenger.exception.UserAlreadyExistsException;
@@ -76,8 +78,12 @@ public class AuthService {
     }
 
     @Transactional
-    public TokenResponse refresh(String refreshToken) {
-        User user = refreshTokenService.refresh(refreshToken);
+    public TokenResponse refresh(RefreshTokenRequest request) {
+        RefreshToken refreshToken = refreshTokenService.find(request.refreshToken());
+        refreshTokenService.checkExpiration(refreshToken);
+
+        User user = refreshToken.getUser();
+        refreshTokenService.delete(refreshToken);
         return tokenPairGenerator.createResponse(user);
     }
 }

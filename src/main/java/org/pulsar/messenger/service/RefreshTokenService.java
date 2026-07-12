@@ -23,50 +23,32 @@ public class RefreshTokenService {
 
     private final Clock clock;
     private final HashService hashService;
-    private final TokenGenerator tokenGenerator;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    private static final int REFRESH_TOKEN_LENGTH = 32;
-
-    @Transactional
-    public String create(User user) {
-        Objects.requireNonNull(user, "User must not be null for refresh token creation");
-
-        byte[] refreshTokenBytes = tokenGenerator.generate(REFRESH_TOKEN_LENGTH);
-        String hashedRefreshToken = hashService.hash(refreshTokenBytes);
-        RefreshToken refreshToken = RefreshToken.builder()
-                .tokenHash(hashedRefreshToken)
-                .user(user)
-                .expiresAt(getExpirationTime())
-                .build();
-        refreshTokenRepository.saveAndFlush(refreshToken);
-        return Base64.getUrlEncoder().encodeToString(refreshTokenBytes);
-    }
-
-    private Instant getExpirationTime() {
-        return Instant.now(clock).plus(60, ChronoUnit.DAYS);
-    }
-
-    @Transactional
-    public User refresh(String oldRefreshToken) {
-        byte[] refreshTokenBytes = Base64.getUrlDecoder().decode(oldRefreshToken.getBytes(StandardCharsets.UTF_8));
-        String refreshTokenHash = hashService.hash(refreshTokenBytes);
-
-        RefreshToken refreshToken = refreshTokenRepository.findByTokenHash(refreshTokenHash)
+    public RefreshToken find(String rawRefreshToken) {
+        String refreshTokenHash = convertToHash(rawRefreshToken);
+        return refreshTokenRepository.findByTokenHash(refreshTokenHash)
                 .orElseThrow(() -> new BadCredentialsException("Invalid refresh token"));
+    }
 
+    private String convertToHash(String rawRefreshToken) {
+        byte[] refreshTokenBytes = Base64.getUrlDecoder().decode(rawRefreshToken.getBytes(StandardCharsets.UTF_8));
+        return hashService.hash(refreshTokenBytes);
+    }
+
+    public void checkExpiration(RefreshToken refreshToken) {
         if (isExpired(refreshToken)) {
             refreshTokenRepository.delete(refreshToken);
-            throw new BadCredentialsException("Refresh token expired");
+            throw new BadCredentialsException("Refresh token has expired");
         }
-
-        User user = refreshToken.getUser();
-        refreshTokenRepository.delete(refreshToken);
-
-        return user;
     }
 
     private boolean isExpired(RefreshToken refreshToken) {
-        return refreshToken.getExpiresAt().isBefore(Instant.now(clock));
+        Instant currentTime = Instant.now(clock);
+        return refreshToken.getExpiresAt().isBefore(currentTime);
+    }
+
+    public void delete(RefreshToken refreshToken) {
+        refreshTokenRepository.delete(refreshToken);
     }
 }
