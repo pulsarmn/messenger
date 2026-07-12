@@ -14,13 +14,13 @@ public class UserMapperTest {
     private final UserMapper userMapper = new UserMapper();
 
     @Test
-    void mapToUser_whenCorrectArguments_shouldReturnMappedUser() {
+    void mapToEntity_whenCorrectArguments_shouldReturnMappedEntity() {
         String username = "correct_username";
         String password = "12345678";
         String passwordHash = "correct_password_hash";
         RegistrationRequest request = new RegistrationRequest(username, password, password);
 
-        User user = userMapper.mapToUser(request, passwordHash);
+        User user = userMapper.mapToEntity(request, passwordHash);
 
         assertThat(user).isNotNull();
         assertThat(user.getUsername()).isEqualTo(username);
@@ -29,10 +29,10 @@ public class UserMapperTest {
     }
 
     @Test
-    void mapToUser_whenRequestIsNull_shouldThrowNullPointerException() {
+    void mapToEntity_whenRequestIsNull_shouldThrowNullPointerException() {
         RegistrationRequest request = null;
         String correctPasswordHash = "correct_password_hash";
 
-        assertThatThrownBy(() -> userMapper.mapToUser(request, correctPasswordHash));
+        assertThatThrownBy(() -> userMapper.mapToEntity(request, correctPasswordHash));
     }
 }

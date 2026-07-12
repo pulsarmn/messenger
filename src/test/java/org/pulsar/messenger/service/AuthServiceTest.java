@@ -56,9 +56,9 @@ public class AuthServiceTest {
 
         doReturn(false).when(userRepository).existsByUsername(request.username());
         doReturn(user.getPasswordHash()).when(passwordEncoder).encode(request.password());
-        doReturn(user).when(userMapper).mapToUser(request, user.getPasswordHash());
+        doReturn(user).when(userMapper).mapToEntity(request, user.getPasswordHash());
         doReturn(user).when(userRepository).saveAndFlush(user);
-        doReturn(expectedResponse).when(tokenPairGenerator).create(user);
+        doReturn(expectedResponse).when(tokenPairGenerator).createResponse(user);
 
         TokenResponse actualResponse = authService.register(request);
 
@@ -99,14 +99,14 @@ public class AuthServiceTest {
 
         doReturn(Optional.of(user)).when(userRepository).findByUsername(authRequest.username());
         doReturn(true).when(passwordEncoder).matches(authRequest.password(), user.getPasswordHash());
-        doReturn(expectedResponse).when(tokenPairGenerator).create(user);
+        doReturn(expectedResponse).when(tokenPairGenerator).createResponse(user);
 
         TokenResponse actualResponse = authService.authenticate(authRequest);
 
         assertThat(actualResponse).isEqualTo(expectedResponse);
         verify(userRepository, times(1)).findByUsername(authRequest.username());
         verify(passwordEncoder, times(1)).matches(authRequest.password(), user.getPasswordHash());
-        verify(tokenPairGenerator, times(1)).create(user);
+        verify(tokenPairGenerator, times(1)).createResponse(user);
     }
 
     @Test
