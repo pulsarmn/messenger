@@ -9,6 +9,8 @@ import org.pulsar.messenger.entity.RefreshToken;
 import org.pulsar.messenger.entity.User;
 import org.pulsar.messenger.repository.RefreshTokenRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.Clock;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -25,6 +27,9 @@ public class TokenPairGenerator {
     private final RefreshTokenFactory refreshTokenFactory;
     private final RefreshTokenRepository refreshTokenRepository;
 
+    private static final int DEFAULT_TOKEN_LENGTH = 32;
+
+    @Transactional
     public TokenResponse createResponse(User user) {
         JwtClaims claims = getClaims(user.getUsername());
         String accessToken = accessTokenFactory.createAccessToken(claims);
@@ -33,7 +38,7 @@ public class TokenPairGenerator {
     }
 
     private String createRefreshToken(User user) {
-        byte[] refreshTokenBytes = tokenGenerator.generate(32);
+        byte[] refreshTokenBytes = tokenGenerator.generate(DEFAULT_TOKEN_LENGTH);
         RefreshToken refreshToken = refreshTokenFactory.buildRefreshToken(refreshTokenBytes, user);
         refreshTokenRepository.saveAndFlush(refreshToken);
         return convertTokenBytes(refreshTokenBytes);
