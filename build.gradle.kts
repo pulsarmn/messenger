@@ -1,5 +1,7 @@
 plugins {
     java
+    id("org.springframework.boot") version "4.1.0"
+    id("io.spring.dependency-management") version "1.1.7"
 }
 
 repositories {
@@ -7,7 +9,11 @@ repositories {
 }
 
 dependencies {
+    implementation(libs.spring.boot.starter.liquibase)
+}
 
+dependencies {
+    implementation(libs.postgresql.driver)
 }
 
 java {
