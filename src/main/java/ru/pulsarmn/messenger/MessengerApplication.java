@@ -1,4 +1,4 @@
-package ru.pulsarmn;
+package ru.pulsarmn.messenger;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

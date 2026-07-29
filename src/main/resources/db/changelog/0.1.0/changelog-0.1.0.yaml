@@ -3,3 +3,7 @@ databaseChangeLog:
       author: pulsarmn
       relativeToChangelogFile: true
       file: changesets/2026_07_28_user_entity.sql
+  - include:
+      author: pulsarmn
+      relativeToChangelogFile: true
+      file: changesets/2026_07_29_rename_birthday_column.sql
