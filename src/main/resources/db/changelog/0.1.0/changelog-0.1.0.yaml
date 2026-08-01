@@ -7,3 +7,7 @@ databaseChangeLog:
       author: pulsarmn
       relativeToChangelogFile: true
       file: changesets/2026_07_29_rename_birthday_column.sql
+  - include:
+      author: pulsarmn
+      relativeToChangelogFile: true
+      file: changesets/2026_08_01_refresh_token_entity.sql
