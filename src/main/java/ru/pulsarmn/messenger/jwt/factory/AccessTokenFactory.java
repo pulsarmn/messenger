@@ -1,10 +1,12 @@
-package ru.pulsarmn.messenger.jwt;
+package ru.pulsarmn.messenger.jwt.factory;
 
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.springframework.stereotype.Component;
+import ru.pulsarmn.messenger.jwt.JwtClaims;
+import ru.pulsarmn.messenger.jwt.JwtSigner;
 
 
 @Component
