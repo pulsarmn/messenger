@@ -18,7 +18,9 @@ dependencies {
 }
 
 dependencies {
-    implementation(libs.postgresql.driver)
+    runtimeOnly(libs.postgresql.driver)
+    implementation(libs.bouncy.castle)
+    implementation(libs.nimbus.jose.jwt)
 }
 
 java {

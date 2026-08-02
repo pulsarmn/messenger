@@ -8,3 +8,8 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
+
+app:
+  jwt:
+    public-key: MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAEzYSWpbY7uzJKqH/AR0bMODv7MKHsLsTchvUMlkdWuh9qj8TGg4NbGjqKRWbj8PC9/8dvno79fBStHceCThzFxBdlkyZl74w+22ZbbJ3kaQiVUyMjq424rkPISiH5jrQz
+    private-key: MIG2AgEAMBAGByqGSM49AgEGBSuBBAAiBIGeMIGbAgEBBDB9HG3+pZ1gU33yJJVupy4iKWNcIAjGpb0VPS/BdhXnw5+Mj16FTwjlKBwJxGi4koehZANiAATNhJaltju7Mkqof8BHRsw4O/swoewuxNyG9QyWR1a6H2qPxMaDg1saOopFZuPw8L3/x2+ejv18FK0dx4JOHMXEF2WTJmXvjD7bZltsneRpCJVTIyOrjbiuQ8hKIfmOtDM=

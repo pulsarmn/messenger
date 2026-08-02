@@ -1,7 +1,7 @@
 package ru.pulsarmn.messenger.mapper;
 
 import org.springframework.stereotype.Component;
-import ru.pulsarmn.messenger.dto.RegistrationRequest;
+import ru.pulsarmn.messenger.dto.request.RegistrationRequest;
 import ru.pulsarmn.messenger.entity.User;
 
 
