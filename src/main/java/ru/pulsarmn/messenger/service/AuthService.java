@@ -1,15 +1,10 @@
 package ru.pulsarmn.messenger.service;
 
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.crypto.ECDSASigner;
-import com.nimbusds.jose.jwk.Curve;
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.pulsarmn.messenger.jwt.AccessTokenFactory;
+import ru.pulsarmn.messenger.jwt.JwtClaims;
 import ru.pulsarmn.messenger.dto.AuthenticationRequest;
 import ru.pulsarmn.messenger.dto.RegistrationRequest;
 import ru.pulsarmn.messenger.dto.TokenPairResponse;
@@ -26,12 +21,10 @@ import ru.pulsarmn.messenger.repository.UserRepository;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.interfaces.ECPrivateKey;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
-import java.util.Date;
 import java.util.HexFormat;
 
 
@@ -43,15 +36,15 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final ECPrivateKey accessTokenPrivateKey;
+    private final AccessTokenFactory accessTokenFactory;
 
-    public AuthService(Clock clock, UserMapper userMapper, UserRepository userRepository, PasswordEncoder passwordEncoder, RefreshTokenRepository refreshTokenRepository, ECPrivateKey accessTokenPrivateKey) {
+    public AuthService(Clock clock, UserMapper userMapper, UserRepository userRepository, PasswordEncoder passwordEncoder, RefreshTokenRepository refreshTokenRepository, AccessTokenFactory accessTokenFactory) {
         this.clock = clock;
         this.userMapper = userMapper;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.refreshTokenRepository = refreshTokenRepository;
-        this.accessTokenPrivateKey = accessTokenPrivateKey;
+        this.accessTokenFactory = accessTokenFactory;
     }
 
     @Transactional
@@ -97,28 +90,22 @@ public class AuthService {
             throw new PasswordMismatchException("Passwords do not matches");
         }
 
-        String accessToken = generateAccessToken(username);
+        return createResponse(user);
+    }
+
+    private TokenPairResponse createResponse(User user) {
+        JwtClaims jwtClaims = buildClaims(user);
+        String accessToken = accessTokenFactory.createAccessToken(jwtClaims);
         String refreshToken = generateRefreshToken(user);
         return new TokenPairResponse(accessToken, refreshToken);
     }
 
-    public String generateAccessToken(String username) {
-        JWSHeader header = new JWSHeader(JWSAlgorithm.ES384);
-
-        JWTClaimsSet claims = new JWTClaimsSet.Builder()
-                .subject(username)
+    private JwtClaims buildClaims(User user) {
+        return JwtClaims.builder()
+                .subject(user.getUsername())
                 .expirationTime(getExpirationTime())
                 .issueTime(getIssueTime())
                 .build();
-
-        try {
-            ECDSASigner signer = new ECDSASigner(accessTokenPrivateKey, Curve.P_384);
-            SignedJWT signedJwt = new SignedJWT(header, claims);
-            signedJwt.sign(signer);
-            return signedJwt.serialize();
-        } catch (JOSEException e) {
-            throw new RuntimeException(); // TODO
-        }
     }
 
     public String generateRefreshToken(User user) {
@@ -149,11 +136,11 @@ public class AuthService {
         return Instant.now(clock).plus(30, ChronoUnit.DAYS);
     }
 
-    private Date getExpirationTime() {
-        return Date.from(Instant.now(clock).plus(10, ChronoUnit.MINUTES));
+    private Instant getExpirationTime() {
+        return Instant.now(clock).plus(10, ChronoUnit.MINUTES);
     }
 
-    private Date getIssueTime() {
-        return Date.from(Instant.now(clock));
+    private Instant getIssueTime() {
+        return Instant.now(clock);
     }
 }
