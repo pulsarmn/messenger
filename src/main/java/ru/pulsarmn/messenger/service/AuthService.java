@@ -32,12 +32,14 @@ public class AuthService {
     }
 
     @Transactional
-    public void register(RegistrationRequest request) {
+    public TokenPairResponse register(RegistrationRequest request) {
         checkUserExistence(request);
         validatePasswordsMatch(request);
 
         User user = mapToUser(request);
-        userRepository.saveAndFlush(user);
+        user = userRepository.saveAndFlush(user);
+
+        return tokenPairFactory.createTokenPair(user);
     }
 
     private void checkUserExistence(RegistrationRequest request) {
