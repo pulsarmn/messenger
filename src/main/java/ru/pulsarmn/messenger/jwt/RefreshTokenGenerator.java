@@ -8,7 +8,15 @@ import java.security.SecureRandom;
 @Component
 public class RefreshTokenGenerator {
 
-    private final SecureRandom secureRandom = new SecureRandom();
+    private final SecureRandom secureRandom;
+
+    public RefreshTokenGenerator() {
+        this(new SecureRandom());
+    }
+
+    public RefreshTokenGenerator(SecureRandom secureRandom) {
+        this.secureRandom = secureRandom;
+    }
 
     public byte[] generate(int length) {
         if (length <= 0) {

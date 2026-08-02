@@ -51,7 +51,7 @@ public class AuthService {
 
     private void validatePasswordsMatch(RegistrationRequest request) {
         if (!passwordsMatch(request)) {
-            throw new BadCredentialsException("The passwords don't match");
+            throw new BadCredentialsException("The passwords do not match");
         }
     }
 
@@ -73,7 +73,7 @@ public class AuthService {
         String rawPassword = request.password();
         String encodedPassword = user.getPasswordHash();
         if (!passwordEncoder.matches(rawPassword, encodedPassword)) {
-            throw new PasswordMismatchException("Passwords do not matches");
+            throw new PasswordMismatchException("Passwords do not match");
         }
 
         return tokenPairFactory.createTokenPair(user);
