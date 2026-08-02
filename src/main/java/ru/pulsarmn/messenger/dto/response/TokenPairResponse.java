@@ -1,4 +1,4 @@
-package ru.pulsarmn.messenger.dto;
+package ru.pulsarmn.messenger.dto.response;
 
 
 public record TokenPairResponse(String accessToken,

@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.pulsarmn.messenger.dto.ErrorResponse;
+import ru.pulsarmn.messenger.dto.response.ErrorResponse;
 import ru.pulsarmn.messenger.exception.BadCredentialsException;
 import ru.pulsarmn.messenger.exception.UserAlreadyExistsException;
 import ru.pulsarmn.messenger.exception.UserNotFoundException;

@@ -1,4 +1,4 @@
-package ru.pulsarmn.messenger.dto;
+package ru.pulsarmn.messenger.dto.response;
 
 import org.springframework.http.HttpStatus;
 import java.time.Instant;

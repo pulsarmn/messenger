@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.pulsarmn.messenger.dto.AuthenticationRequest;
-import ru.pulsarmn.messenger.dto.RegistrationRequest;
-import ru.pulsarmn.messenger.dto.TokenPairResponse;
+import ru.pulsarmn.messenger.dto.request.AuthenticationRequest;
+import ru.pulsarmn.messenger.dto.request.RegistrationRequest;
+import ru.pulsarmn.messenger.dto.response.TokenPairResponse;
 import ru.pulsarmn.messenger.service.AuthService;
 
 
