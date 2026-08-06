@@ -7,8 +7,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.pulsarmn.messenger.dto.request.AuthenticationRequest;
+import ru.pulsarmn.messenger.dto.request.RefreshTokenRequest;
 import ru.pulsarmn.messenger.dto.request.RegistrationRequest;
 import ru.pulsarmn.messenger.dto.response.TokenPairResponse;
+import ru.pulsarmn.messenger.entity.RefreshToken;
 import ru.pulsarmn.messenger.entity.User;
 import ru.pulsarmn.messenger.exception.BadCredentialsException;
 import ru.pulsarmn.messenger.exception.PasswordMismatchException;
@@ -40,6 +42,9 @@ public class AuthServiceTest {
 
     @Mock
     private TokenPairFactory tokenPairFactory;
+
+    @Mock
+    private RefreshTokenService refreshTokenService;
 
     @InjectMocks
     private AuthService authService;
@@ -143,5 +148,57 @@ public class AuthServiceTest {
                 .hasMessage("Passwords do not match");
         verify(userRepository, times(1)).findByUsername(request.username());
         verify(passwordEncoder, times(1)).matches(request.password(), user.getPasswordHash());
+    }
+
+    @Test
+    void refresh_whenValidRefreshToken_shouldRefreshTokens() {
+        RefreshTokenRequest request = new RefreshTokenRequest("correct_refresh_token");
+        User user = User.builder()
+                .username("correct_username")
+                .build();
+        RefreshToken refreshToken = RefreshToken.builder()
+                .tokenHash("token_hash")
+                .user(user)
+                .build();
+        TokenPairResponse expectedResponse = new TokenPairResponse("new_access_token", "new_refresh_token");
+
+        doReturn(refreshToken).when(refreshTokenService).find(request.oldRefreshToken());
+        doReturn(false).when(refreshTokenService).isExpired(refreshToken);
+        doNothing().when(refreshTokenService).delete(refreshToken);
+        doReturn(expectedResponse).when(tokenPairFactory).createTokenPair(user);
+
+        TokenPairResponse actualResponse = authService.refresh(request);
+        assertThat(actualResponse).isEqualTo(expectedResponse);
+        verify(refreshTokenService, times(1)).find(request.oldRefreshToken());
+        verify(refreshTokenService, times(1)).isExpired(refreshToken);
+        verify(refreshTokenService, times(1)).delete(refreshToken);
+        verify(tokenPairFactory, times(1)).createTokenPair(user);
+    }
+
+    @Test
+    void refresh_whenNonExistentToken_shouldThrowBadCredentialsException() {
+        RefreshTokenRequest request = new RefreshTokenRequest("non_existent_token");
+        String exMessage = "Invalid refresh token";
+
+        doThrow(new BadCredentialsException(exMessage)).when(refreshTokenService).find(request.oldRefreshToken());
+
+        assertThatThrownBy(() -> authService.refresh(request))
+                .isInstanceOf(BadCredentialsException.class)
+                .hasMessage(exMessage);
+    }
+
+    @Test
+    void refresh_whenExpiredToken_shouldThrowBadCredentialsException() {
+        RefreshTokenRequest request = new RefreshTokenRequest("expired_refresh_token");
+        RefreshToken refreshToken = RefreshToken.builder()
+                .tokenHash("token_hash")
+                .build();
+
+        doReturn(refreshToken).when(refreshTokenService).find(request.oldRefreshToken());
+        doReturn(true).when(refreshTokenService).isExpired(refreshToken);
+
+        assertThatThrownBy(() -> authService.refresh(request))
+                .isInstanceOf(BadCredentialsException.class)
+                .hasMessage("Refresh token has expired");
     }
 }
