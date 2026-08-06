@@ -3,15 +3,17 @@ package ru.pulsarmn.messenger.service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.pulsarmn.messenger.jwt.factory.TokenPairFactory;
 import ru.pulsarmn.messenger.dto.request.AuthenticationRequest;
+import ru.pulsarmn.messenger.dto.request.RefreshTokenRequest;
 import ru.pulsarmn.messenger.dto.request.RegistrationRequest;
 import ru.pulsarmn.messenger.dto.response.TokenPairResponse;
+import ru.pulsarmn.messenger.entity.RefreshToken;
 import ru.pulsarmn.messenger.entity.User;
 import ru.pulsarmn.messenger.exception.BadCredentialsException;
 import ru.pulsarmn.messenger.exception.PasswordMismatchException;
 import ru.pulsarmn.messenger.exception.UserAlreadyExistsException;
 import ru.pulsarmn.messenger.exception.UserNotFoundException;
+import ru.pulsarmn.messenger.jwt.factory.TokenPairFactory;
 import ru.pulsarmn.messenger.mapper.UserMapper;
 import ru.pulsarmn.messenger.repository.UserRepository;
 
@@ -23,12 +25,14 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenPairFactory tokenPairFactory;
+    private final RefreshTokenService refreshTokenService;
 
-    public AuthService(UserMapper userMapper, UserRepository userRepository, PasswordEncoder passwordEncoder, TokenPairFactory tokenPairFactory) {
+    public AuthService(UserMapper userMapper, UserRepository userRepository, PasswordEncoder passwordEncoder, TokenPairFactory tokenPairFactory, RefreshTokenService refreshTokenService) {
         this.userMapper = userMapper;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenPairFactory = tokenPairFactory;
+        this.refreshTokenService = refreshTokenService;
     }
 
     @Transactional
@@ -77,5 +81,22 @@ public class AuthService {
         }
 
         return tokenPairFactory.createTokenPair(user);
+    }
+
+    @Transactional
+    public TokenPairResponse refresh(RefreshTokenRequest request) {
+        RefreshToken refreshToken = refreshTokenService.find(request.oldRefreshToken());
+        checkRefreshTokenExpiration(refreshToken);
+
+        User user = refreshToken.getUser();
+        refreshTokenService.delete(refreshToken);
+        return tokenPairFactory.createTokenPair(user);
+    }
+
+    private void checkRefreshTokenExpiration(RefreshToken refreshToken) {
+        if (refreshTokenService.isExpired(refreshToken)) {
+            refreshTokenService.delete(refreshToken);
+            throw new BadCredentialsException("Refresh token has expired");
+        }
     }
 }
