@@ -8,9 +8,12 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
 import org.springframework.security.config.annotation.web.configurers.ExceptionHandlingConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import ru.pulsarmn.messenger.repository.UserRepository;
+import ru.pulsarmn.messenger.security.DefaultUserDetailsService;
 
 
 @Configuration
@@ -39,6 +42,11 @@ public class SecurityConfiguration {
         configurer
                 .requestMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll()
                 .anyRequest().authenticated();
+    }
+
+    @Bean
+    UserDetailsService userDetailsService(UserRepository userRepository) {
+        return new DefaultUserDetailsService(userRepository);
     }
 
     @Bean
