@@ -11,8 +11,9 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import ru.pulsarmn.messenger.jwt.JwtVerificationResult;
-import ru.pulsarmn.messenger.jwt.JwtVerifier;
+import ru.pulsarmn.messenger.security.jwt.JwtAuthorizationFilter;
+import ru.pulsarmn.messenger.security.jwt.JwtVerificationResult;
+import ru.pulsarmn.messenger.security.jwt.JwtVerifier;
 
 import java.util.UUID;
 

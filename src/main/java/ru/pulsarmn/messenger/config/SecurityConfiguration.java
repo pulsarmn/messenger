@@ -15,7 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import ru.pulsarmn.messenger.repository.UserRepository;
 import ru.pulsarmn.messenger.security.DefaultUserDetailsService;
-import ru.pulsarmn.messenger.security.JwtAuthorizationFilter;
+import ru.pulsarmn.messenger.security.jwt.JwtAuthorizationFilter;
 
 
 @Configuration

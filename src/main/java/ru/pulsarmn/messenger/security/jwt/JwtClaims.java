@@ -1,4 +1,4 @@
-package ru.pulsarmn.messenger.jwt;
+package ru.pulsarmn.messenger.security.jwt;
 
 import com.nimbusds.jwt.JWTClaimNames;
 
