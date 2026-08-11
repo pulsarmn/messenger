@@ -12,12 +12,20 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import ru.pulsarmn.messenger.repository.UserRepository;
 import ru.pulsarmn.messenger.security.DefaultUserDetailsService;
+import ru.pulsarmn.messenger.security.JwtAuthorizationFilter;
 
 
 @Configuration
 public class SecurityConfiguration {
+
+    private final JwtAuthorizationFilter jwtAuthorizationFilter;
+
+    public SecurityConfiguration(JwtAuthorizationFilter jwtAuthorizationFilter) {
+        this.jwtAuthorizationFilter = jwtAuthorizationFilter;
+    }
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) {
@@ -29,6 +37,7 @@ public class SecurityConfiguration {
                 .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(this::configureExceptionHandling)
                 .authorizeHttpRequests(this::configureRequestMatchers)
+                .addFilterBefore(jwtAuthorizationFilter, AuthorizationFilter.class)
                 .build();
     }
 
