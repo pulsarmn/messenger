@@ -32,7 +32,8 @@ public class TokenPairFactory {
 
     private JwtClaims buildClaims(User user) {
         return JwtClaims.builder()
-                .subject(user.getUsername())
+                .subject(user.getId().toString())
+                .claim("username", user.getUsername())
                 .expirationTime(getExpirationTime())
                 .issueTime(getIssueTime())
                 .build();
