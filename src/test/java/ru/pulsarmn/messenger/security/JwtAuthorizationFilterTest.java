@@ -9,12 +9,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import ru.pulsarmn.messenger.security.jwt.JwtAuthorizationFilter;
-import ru.pulsarmn.messenger.security.jwt.JwtVerificationResult;
-import ru.pulsarmn.messenger.security.jwt.JwtVerifier;
+import ru.pulsarmn.messenger.security.jwt.*;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,6 +28,12 @@ public class JwtAuthorizationFilterTest {
     @Mock
     private JwtVerifier jwtVerifier;
 
+    @Mock
+    private JwtHeaderExtractor headerExtractor;
+
+    @Mock
+    private JwtAuthenticationConverter authenticationConverter;
+
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
     private MockFilterChain filterChain;
@@ -37,7 +44,7 @@ public class JwtAuthorizationFilterTest {
     void initMocks() {
         SecurityContextHolder.clearContext();
 
-        jwtAuthorizationFilter = new JwtAuthorizationFilter(jwtVerifier);
+        jwtAuthorizationFilter = new JwtAuthorizationFilter(jwtVerifier, headerExtractor, authenticationConverter);
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
         filterChain = new MockFilterChain();
@@ -49,15 +56,18 @@ public class JwtAuthorizationFilterTest {
         request.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
         JwtVerificationResult verificationResult = JwtVerificationResult.success("916e6bfe-1cc2-46bc-acda-713b5aa56d2e", "valid.username");
         UserPrincipal principal = new UserPrincipal(UUID.fromString("916e6bfe-1cc2-46bc-acda-713b5aa56d2e"), "valid.username");
+        Authentication expectedAuthentication = new UsernamePasswordAuthenticationToken(principal, null, List.of());
 
+        doReturn(Optional.of(accessToken)).when(headerExtractor).extractToken(request);
         doReturn(verificationResult).when(jwtVerifier).verify(accessToken);
+        doReturn(expectedAuthentication).when(authenticationConverter).toAuthentication(request, verificationResult);
 
         jwtAuthorizationFilter.doFilter(request, response, filterChain);
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        assertThat(authentication).isNotNull();
-        assertThat(authentication.isAuthenticated()).isTrue();
-        assertThat(principal).isEqualTo(authentication.getPrincipal());
+        Authentication actualAuthentication = SecurityContextHolder.getContext().getAuthentication();
+        assertThat(actualAuthentication).isNotNull();
+        assertThat(actualAuthentication.isAuthenticated()).isTrue();
+        assertThat(principal).isEqualTo(actualAuthentication.getPrincipal());
         assertThat(filterChain.getRequest()).isNotNull();
     }
 
@@ -83,6 +93,7 @@ public class JwtAuthorizationFilterTest {
         request.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
         JwtVerificationResult verificationResult = JwtVerificationResult.failed("Invalid jwt token");
 
+        doReturn(Optional.of(accessToken)).when(headerExtractor).extractToken(request);
         doReturn(verificationResult).when(jwtVerifier).verify(accessToken);
 
         jwtAuthorizationFilter.doFilter(request, response, filterChain);
