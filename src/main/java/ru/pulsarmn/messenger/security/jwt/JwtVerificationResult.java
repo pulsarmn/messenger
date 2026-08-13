@@ -1,55 +1,40 @@
 package ru.pulsarmn.messenger.security.jwt;
 
-import java.util.*;
+import java.util.Set;
+import java.util.UUID;
 
 
-public class JwtVerificationResult {
+public sealed interface JwtVerificationResult {
 
-    private final String userId;
-    private final String username;
-    private final boolean isValid;
-    private final String error;
-    private final Set<String> roles = new HashSet<>();
+    boolean isValid();
 
-    private JwtVerificationResult(String userId, String username, boolean isValid, String error, Collection<String> roles) {
-        this.userId = userId;
-        this.username = username;
-        this.isValid = isValid;
-        this.error = error;
-        if (roles != null) {
-            this.roles.addAll(roles);
+    record Success(UUID userId, String username, Set<String> roles) implements JwtVerificationResult {
+
+        @Override
+        public boolean isValid() {
+            return true;
         }
     }
 
-    public static JwtVerificationResult success(String userId, String username) {
-        return success(userId, username, List.of());
+    record Failure(JwtErrorReason errorReason) implements JwtVerificationResult {
+
+        @Override
+        public boolean isValid() {
+            return false;
+        }
     }
 
-    public static JwtVerificationResult success(String userId, String username, Collection<String> roles) {
-        return new JwtVerificationResult(userId, username, true, null, roles);
+    enum JwtErrorReason {
+        EXPIRED,
+        MALFORMED,
+        INVALID_SIGNATURE
     }
 
-    public static JwtVerificationResult failed(String error) {
-        return new JwtVerificationResult(null, null, false, error, List.of());
+    static JwtVerificationResult success(UUID userId, String username, Set<String> roles) {
+        return new Success(userId, username, roles);
     }
 
-    public boolean isValid() {
-        return isValid;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public Set<String> getRoles() {
-        return Collections.unmodifiableSet(roles);
-    }
-
-    public String getError() {
-        return error;
+    static JwtVerificationResult failure(JwtErrorReason errorReason) {
+        return new Failure(errorReason);
     }
 }

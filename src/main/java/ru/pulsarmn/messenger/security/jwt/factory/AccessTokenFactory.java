@@ -19,7 +19,7 @@ public class AccessTokenFactory {
     }
 
     public String createAccessToken(JwtClaims jwtClaims) {
-        JWSHeader header = new JWSHeader(JWSAlgorithm.ES384);
+        JWSHeader header = new JWSHeader(JWSAlgorithm.ES384); // TODO: implement Algorithm Provider
         JWTClaimsSet claims = convertToNimbusClaims(jwtClaims);
 
         SignedJWT unsignedJwt = new SignedJWT(header, claims);
@@ -27,7 +27,7 @@ public class AccessTokenFactory {
         return unsignedJwt.serialize();
     }
 
-    private JWTClaimsSet convertToNimbusClaims(JwtClaims jwtClaims) {
+    private JWTClaimsSet convertToNimbusClaims(JwtClaims jwtClaims) { // TODO: maybe extract this method to JwtClaimsConverter class
         JWTClaimsSet.Builder claimsBuilder = new JWTClaimsSet.Builder();
         jwtClaims.getClaims().forEach(claimsBuilder::claim);
         return claimsBuilder.build();

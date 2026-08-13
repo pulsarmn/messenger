@@ -11,7 +11,7 @@ import java.security.interfaces.ECPublicKey;
 import java.text.ParseException;
 import java.time.Clock;
 import java.time.Instant;
-import java.util.Date;
+import java.util.*;
 
 
 @Component
@@ -29,18 +29,32 @@ public class JwtVerifier {
         try {
             SignedJWT token = SignedJWT.parse(rawAccessToken);
             JWSVerifier verifier = new ECDSAVerifier(accessTokenPublicKey);
-            if (token.verify(verifier) && isNonExpired(token)) {
-                JWTClaimsSet claims = token.getJWTClaimsSet();
-                String subject = claims.getSubject();
-                Object username = claims.getClaim("username");
-                if (username instanceof String strUsername) {
-                    return JwtVerificationResult.success(subject, strUsername);
-                }
+            boolean isValid = token.verify(verifier);
+            if (isValid && isNonExpired(token)) {
+                return convertToResult(token);
             }
-            return JwtVerificationResult.failed("Invalid or expired JWT token");
-        } catch (JOSEException | ParseException e) {
-            return JwtVerificationResult.failed("Invalid or expired JWT token");
+            return JwtVerificationResult.failure(JwtVerificationResult.JwtErrorReason.INVALID_SIGNATURE);
+        } catch (ParseException e) {
+            return JwtVerificationResult.failure(JwtVerificationResult.JwtErrorReason.MALFORMED);
+        } catch (JOSEException e) {
+            return JwtVerificationResult.failure(JwtVerificationResult.JwtErrorReason.INVALID_SIGNATURE);
         }
+    }
+
+    private JwtVerificationResult convertToResult(SignedJWT token) throws ParseException {
+        JWTClaimsSet claims = token.getJWTClaimsSet();
+        UUID userId = UUID.fromString(claims.getSubject());
+        String username = (String) claims.getClaim("username");
+        Set<String> roles = extractRoles(claims);
+        return JwtVerificationResult.success(userId, username, roles);
+    }
+
+    private Set<String> extractRoles(JWTClaimsSet claims) throws ParseException {
+        List<String> rawRoles = claims.getStringListClaim("roles");
+        if (rawRoles != null) {
+            return new HashSet<>(rawRoles);
+        }
+        return Set.of();
     }
 
     private boolean isNonExpired(SignedJWT token) throws ParseException {

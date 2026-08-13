@@ -12,7 +12,7 @@ import java.security.interfaces.ECPrivateKey;
 @Component
 public class JwtSigner {
 
-    private final ECPrivateKey accessTokenPrivateKey;
+    private final ECPrivateKey accessTokenPrivateKey; // TODO: extract this to AccessTokenPrivateKeyProvider
 
     public JwtSigner(ECPrivateKey accessTokenPrivateKey) {
         this.accessTokenPrivateKey = accessTokenPrivateKey;

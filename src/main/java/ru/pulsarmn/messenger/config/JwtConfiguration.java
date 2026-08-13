@@ -21,13 +21,15 @@ public class JwtConfiguration {
 
     private final JwtProperties jwtProperties;
 
+    private static final String ALGORITHM = "EC";
+
     public JwtConfiguration(JwtProperties jwtProperties) {
         this.jwtProperties = jwtProperties;
     }
 
     @Bean
     ECPrivateKey accessTokenPrivateKey() throws Exception {
-        KeyFactory keyFactory = KeyFactory.getInstance("EC");
+        KeyFactory keyFactory = KeyFactory.getInstance(ALGORITHM);
         KeySpec privateKeySpec = getPrivateKeySpec();
         return (ECPrivateKey) keyFactory.generatePrivate(privateKeySpec);
     }
@@ -40,7 +42,7 @@ public class JwtConfiguration {
 
     @Bean
     ECPublicKey accessTokenPublicKey() throws Exception {
-        KeyFactory keyFactory = KeyFactory.getInstance("EC");
+        KeyFactory keyFactory = KeyFactory.getInstance(ALGORITHM);
         KeySpec publicKeySpec = getPublicKeySpec();
         return (ECPublicKey) keyFactory.generatePublic(publicKeySpec);
     }
