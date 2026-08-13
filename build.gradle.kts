@@ -10,9 +10,9 @@ repositories {
 
 dependencies {
     implementation(libs.spring.boot.starter.web)
-    implementation(libs.spring.security.crypto)
     implementation(libs.spring.boot.starter.test)
     implementation(libs.spring.boot.starter.data.jpa)
+    implementation(libs.spring.boot.starter.security)
     implementation(libs.spring.boot.starter.liquibase)
     implementation(libs.spring.boot.starter.validation)
 }

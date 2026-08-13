@@ -16,7 +16,7 @@ import ru.pulsarmn.messenger.exception.BadCredentialsException;
 import ru.pulsarmn.messenger.exception.PasswordMismatchException;
 import ru.pulsarmn.messenger.exception.UserAlreadyExistsException;
 import ru.pulsarmn.messenger.exception.UserNotFoundException;
-import ru.pulsarmn.messenger.jwt.factory.TokenPairFactory;
+import ru.pulsarmn.messenger.security.jwt.factory.TokenPairFactory;
 import ru.pulsarmn.messenger.mapper.UserMapper;
 import ru.pulsarmn.messenger.repository.UserRepository;
 

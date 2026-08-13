@@ -1,9 +1,9 @@
-package ru.pulsarmn.messenger.jwt.factory;
+package ru.pulsarmn.messenger.security.jwt.factory;
 
 import org.springframework.stereotype.Component;
 import ru.pulsarmn.messenger.dto.response.TokenPairResponse;
 import ru.pulsarmn.messenger.entity.User;
-import ru.pulsarmn.messenger.jwt.JwtClaims;
+import ru.pulsarmn.messenger.security.jwt.JwtClaims;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -32,7 +32,8 @@ public class TokenPairFactory {
 
     private JwtClaims buildClaims(User user) {
         return JwtClaims.builder()
-                .subject(user.getUsername())
+                .subject(user.getId().toString())
+                .claim("username", user.getUsername())
                 .expirationTime(getExpirationTime())
                 .issueTime(getIssueTime())
                 .build();
