@@ -7,6 +7,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.pulsarmn.messenger.dto.response.ErrorResponse;
@@ -42,6 +43,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(HttpServletRequest request) {
         return buildResponse(HttpStatus.BAD_REQUEST, "Invalid body argument", request);
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    ResponseEntity<ErrorResponse> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpServletRequest request) {
+        String parameterName = ex.getParameterName();
+        return buildResponse(HttpStatus.BAD_REQUEST, "Missing query param: " + parameterName, request);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
