@@ -30,7 +30,7 @@ public class TokenPairFactory {
         return new TokenPairResponse(accessToken, refreshToken);
     }
 
-    private JwtClaims buildClaims(User user) {
+    private JwtClaims buildClaims(User user) { // TOOD: extract to JwtClaimsBuilder or JwtClaimsFactory
         return JwtClaims.builder()
                 .subject(user.getId().toString())
                 .claim("username", user.getUsername())
