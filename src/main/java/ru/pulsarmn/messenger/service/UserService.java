@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.pulsarmn.messenger.dto.request.DisplayNameUpdateRequest;
 import ru.pulsarmn.messenger.dto.request.UsernameUpdateRequest;
 import ru.pulsarmn.messenger.dto.response.UserProfileResponse;
 import ru.pulsarmn.messenger.dto.response.UserSearchResponse;
@@ -47,6 +48,20 @@ public class UserService {
         String newUsername = request.newUsername();
         if (!(user.getUsername()).equals(newUsername)) {
             user.setUsername(newUsername);
+            userRepository.save(user);
+        }
+        return user;
+    }
+
+    @Transactional
+    public UserProfileResponse updateDisplayName(UUID userId, DisplayNameUpdateRequest request) {
+        return update(userId, user -> setNewDisplayNameIfNecessary(user, request));
+    }
+
+    private User setNewDisplayNameIfNecessary(User user, DisplayNameUpdateRequest request) {
+        String newDisplayName = request.newDisplayName();
+        if (!(user.getDisplayName()).equals(newDisplayName)) {
+            user.setDisplayName(newDisplayName);
             userRepository.save(user);
         }
         return user;
