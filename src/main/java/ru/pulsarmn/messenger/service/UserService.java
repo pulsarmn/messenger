@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.pulsarmn.messenger.dto.request.BirthdateUpdateRequest;
 import ru.pulsarmn.messenger.dto.request.DisplayNameUpdateRequest;
 import ru.pulsarmn.messenger.dto.request.UsernameUpdateRequest;
 import ru.pulsarmn.messenger.dto.response.UserProfileResponse;
@@ -13,6 +14,8 @@ import ru.pulsarmn.messenger.exception.UserNotFoundException;
 import ru.pulsarmn.messenger.mapper.UserMapper;
 import ru.pulsarmn.messenger.repository.UserRepository;
 
+import java.time.LocalDate;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -62,6 +65,21 @@ public class UserService {
         String newDisplayName = request.newDisplayName();
         if (!(user.getDisplayName()).equals(newDisplayName)) {
             user.setDisplayName(newDisplayName);
+            userRepository.save(user);
+        }
+        return user;
+    }
+
+    @Transactional
+    public UserProfileResponse updateBirthdate(UUID userId, BirthdateUpdateRequest request) {
+        return update(userId, user -> setNewBirthdateIfNecessary(user, request));
+    }
+
+    private User setNewBirthdateIfNecessary(User user, BirthdateUpdateRequest request) {
+        // TODO: add birthdate validation
+        LocalDate newBirthdate = request.newBirthDate();
+        if (!Objects.equals(user.getBirthdate(), newBirthdate)) {
+            user.setBirthdate(newBirthdate);
             userRepository.save(user);
         }
         return user;
