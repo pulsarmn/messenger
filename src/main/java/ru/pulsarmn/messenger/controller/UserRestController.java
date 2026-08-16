@@ -5,11 +5,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.pulsarmn.messenger.dto.response.UserProfileResponse;
 import ru.pulsarmn.messenger.dto.response.UserSearchResponse;
+import ru.pulsarmn.messenger.security.UserPrincipal;
 import ru.pulsarmn.messenger.service.UserService;
 
 
@@ -29,5 +32,11 @@ public class UserRestController {
             @PageableDefault(size = 10, sort = "username") Pageable pageable) {
         Page<UserSearchResponse> usersPage = userService.findUsers(query, pageable);
         return ResponseEntity.ok(usersPage);
+    }
+
+    @GetMapping("/me")
+    ResponseEntity<UserProfileResponse> getProfile(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        UserProfileResponse response = userService.getUserProfile(userPrincipal.getUserId());
+        return ResponseEntity.ok(response);
     }
 }

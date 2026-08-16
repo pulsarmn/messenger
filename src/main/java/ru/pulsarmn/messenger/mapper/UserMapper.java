@@ -21,4 +21,13 @@ public class UserMapper {
     public UserSearchResponse mapToSearchResponse(User user) {
         return new UserSearchResponse(user.getUsername());
     }
+
+    public UserProfileResponse mapToProfileResponse(User user) {
+        return new UserProfileResponse(
+                user.getUsername(),
+                user.getDisplayName(),
+                user.getPhoneNumber(),
+                user.getBirthdate()
+        );
+    }
 }
