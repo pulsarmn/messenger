@@ -4,8 +4,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.pulsarmn.messenger.dto.request.BirthdateUpdateRequest;
-import ru.pulsarmn.messenger.dto.request.DisplayNameUpdateRequest;
 import ru.pulsarmn.messenger.dto.request.UsernameUpdateRequest;
 import ru.pulsarmn.messenger.dto.response.UserProfileResponse;
 import ru.pulsarmn.messenger.dto.response.UserSearchResponse;
@@ -14,10 +12,7 @@ import ru.pulsarmn.messenger.exception.UserNotFoundException;
 import ru.pulsarmn.messenger.mapper.UserMapper;
 import ru.pulsarmn.messenger.repository.UserRepository;
 
-import java.time.LocalDate;
-import java.util.Objects;
 import java.util.UUID;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 
@@ -39,6 +34,27 @@ public class UserService {
 
     public UserProfileResponse getUserProfile(UUID userId) {
         return userRepository.findById(userId)
+                .map(userMapper::mapToProfileResponse)
+                .orElseThrow(() -> createUserNotFoundException(userId));
+    }
+
+    @Transactional
+    public UserProfileResponse updateUsername(UUID userId, UsernameUpdateRequest request) {
+        return update(userId, user -> setNewUsernameIfNecessary(user, request));
+    }
+
+    private User setNewUsernameIfNecessary(User user, UsernameUpdateRequest request) {
+        String newUsername = request.newUsername();
+        if (!(user.getUsername()).equals(newUsername)) {
+            user.setUsername(newUsername);
+            userRepository.save(user);
+        }
+        return user;
+    }
+
+    private UserProfileResponse update(UUID userId, Function<User, User> updateFunction) {
+        return userRepository.findById(userId)
+                .map(updateFunction)
                 .map(userMapper::mapToProfileResponse)
                 .orElseThrow(() -> createUserNotFoundException(userId));
     }
