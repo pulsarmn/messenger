@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep Changelog](https://keepachangelog.com)
 
+## [0.2.0] - 2026-08-18
+
+### Added
+- ****
+
 ## [0.1.0] - 2026-08-13
 
 ### Added
