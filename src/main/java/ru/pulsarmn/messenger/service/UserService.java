@@ -31,6 +31,11 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    public User getUserById(UUID userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> createUserNotFoundException(userId));
+    }
+
     public Page<UserSearchResponse> findUsers(String query, Pageable pageable) {
         return userRepository.searchUsers(query, pageable)
                 .map(userMapper::mapToSearchResponse);

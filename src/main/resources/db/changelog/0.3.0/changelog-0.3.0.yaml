@@ -1,7 +1,7 @@
 databaseChangeLog:
   - include:
       relativeToChangelogFile: true
-      file: 0.1.0/changelog-0.1.0.yaml
+      file: changesets/2026_08_19_chat_entity.sql
   - include:
       relativeToChangelogFile: true
-      file: 0.3.0/changelog-0.3.0.yaml
+      file: changesets/2026_08_21_direct_chat_entity.sql
