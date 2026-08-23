@@ -20,6 +20,13 @@ public class DirectChatId {
         this.higherUserId = higherUserId;
     }
 
+    public static DirectChatId of(UUID uuid1, UUID uuid2) {
+        if (uuid1.compareTo(uuid2) > 0) {
+            return new DirectChatId(uuid2, uuid1);
+        }
+        return new DirectChatId(uuid1, uuid2);
+    }
+
     public UUID getLowerUserId() {
         return lowerUserId;
     }
