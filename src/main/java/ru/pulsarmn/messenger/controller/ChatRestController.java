@@ -10,23 +10,23 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.pulsarmn.messenger.dto.request.ChatCreationRequest;
 import ru.pulsarmn.messenger.dto.response.ChatResponse;
 import ru.pulsarmn.messenger.security.UserPrincipal;
-import ru.pulsarmn.messenger.service.ChatProcessor;
+import ru.pulsarmn.messenger.service.DirectChatService;
 
 
 @RestController
 @RequestMapping("/api/v1/chats")
 public class ChatRestController {
 
-    private final ChatProcessor chatProcessor;
+    private final DirectChatService directChatService;
 
-    public ChatRestController(ChatProcessor chatProcessor) {
-        this.chatProcessor = chatProcessor;
+    public ChatRestController(DirectChatService directChatService) {
+        this.directChatService = directChatService;
     }
 
     @PostMapping("/direct")
     ResponseEntity<ChatResponse> createChat(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody ChatCreationRequest request) {
-        ChatResponse response = chatProcessor.createChat(userPrincipal.getUserId(), request);
-        return ResponseEntity.status(HttpStatus.OK)
+        ChatResponse response = directChatService.getOrCreateDirectChat(userPrincipal.getUserId(), request);
+        return ResponseEntity.status(HttpStatus.CREATED)
                 .body(response);
     }
 }
