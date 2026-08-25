@@ -29,7 +29,7 @@ public class Message {
 
     @Column(name = "type")
     @Enumerated(value = EnumType.STRING)
-    private Type type;
+    private MessageType type;
 
     @Column(name = "text")
     private String text;
@@ -49,22 +49,16 @@ public class Message {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    public enum Type {
-        TEXT,
-        VIDEO,
-        PHOTO,
-        FILE
-    }
-
     public enum Status {
         SENT,
         DELIVERED,
         READ
     }
 
-    public Message() {}
+    public Message() {
+    }
 
-    public Message(UUID id, Chat chat, User sender, Type type, String text, Attachment attachment, Status status, Instant createdAt, Instant updatedAt) {
+    public Message(UUID id, Chat chat, User sender, MessageType type, String text, Attachment attachment, Status status, Instant createdAt, Instant updatedAt) {
         this.id = id;
         this.chat = chat;
         this.sender = sender;
@@ -100,11 +94,11 @@ public class Message {
         this.sender = sender;
     }
 
-    public Type getType() {
+    public MessageType getType() {
         return type;
     }
 
-    public void setType(Type type) {
+    public void setType(MessageType type) {
         this.type = type;
     }
 
@@ -152,7 +146,7 @@ public class Message {
         private UUID id;
         private Chat chat;
         private User sender;
-        private Type type;
+        private MessageType type;
         private String text;
         private Attachment attachment;
         private Status status;
@@ -174,7 +168,7 @@ public class Message {
             return this;
         }
 
-        public Builder type(Type type) {
+        public Builder type(MessageType type) {
             this.type = type;
             return this;
         }
