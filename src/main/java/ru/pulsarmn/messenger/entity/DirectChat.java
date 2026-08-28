@@ -74,6 +74,14 @@ public class DirectChat {
         this.chat = chat;
     }
 
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
     public static class Builder {
         private User lowerUser;
         private User higherUser;

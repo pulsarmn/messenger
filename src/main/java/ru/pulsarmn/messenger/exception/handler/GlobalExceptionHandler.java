@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.pulsarmn.messenger.dto.response.ErrorResponse;
 import ru.pulsarmn.messenger.exception.BadCredentialsException;
+import ru.pulsarmn.messenger.exception.ChatMemberNotFoundException;
 import ru.pulsarmn.messenger.exception.UserAlreadyExistsException;
 import ru.pulsarmn.messenger.exception.UserNotFoundException;
 
@@ -28,6 +29,11 @@ public class GlobalExceptionHandler {
 
     public GlobalExceptionHandler(Clock clock) {
         this.clock = clock;
+    }
+
+    @ExceptionHandler(ChatMemberNotFoundException.class)
+    ResponseEntity<ErrorResponse> handleChatMemberNotFound(HttpServletRequest request) {
+        return buildResponse(HttpStatus.BAD_REQUEST, "Invalid userId or chatId", request);
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
