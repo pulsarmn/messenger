@@ -39,7 +39,7 @@ public class Message {
 
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
-    private Status status;
+    private MessageStatus status;
 
     @CreationTimestamp
     @Column(name = "created_at")
@@ -58,7 +58,7 @@ public class Message {
     public Message() {
     }
 
-    public Message(UUID id, Chat chat, User sender, MessageType type, String text, Attachment attachment, Status status, Instant createdAt, Instant updatedAt) {
+    public Message(UUID id, Chat chat, User sender, MessageType type, String text, Attachment attachment, MessageStatus status, Instant createdAt, Instant updatedAt) {
         this.id = id;
         this.chat = chat;
         this.sender = sender;
@@ -118,11 +118,11 @@ public class Message {
         this.attachment = attachment;
     }
 
-    public Status getStatus() {
+    public MessageStatus getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(MessageStatus status) {
         this.status = status;
     }
 
@@ -149,7 +149,7 @@ public class Message {
         private MessageType type;
         private String text;
         private Attachment attachment;
-        private Status status;
+        private MessageStatus status;
         private Instant createdAt;
         private Instant updatedAt;
 
@@ -183,7 +183,7 @@ public class Message {
             return this;
         }
 
-        public Builder status(Status status) {
+        public Builder status(MessageStatus status) {
             this.status = status;
             return this;
         }
