@@ -23,6 +23,10 @@ dependencies {
     implementation(libs.nimbus.jose.jwt)
 }
 
+tasks.withType<JavaCompile>().configureEach {
+    options.compilerArgs.add("-parameters")
+}
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(25)
