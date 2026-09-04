@@ -8,6 +8,10 @@ public sealed interface JwtVerificationResult {
 
     boolean isValid();
 
+    default boolean isInvalid() {
+        return !isValid();
+    }
+
     record Success(UUID userId, String username, Set<String> roles) implements JwtVerificationResult {
 
         @Override
