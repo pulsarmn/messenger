@@ -1,4 +1,4 @@
-package ru.pulsarmn.messenger.controller;
+package ru.pulsarmn.messenger.controller.rest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
