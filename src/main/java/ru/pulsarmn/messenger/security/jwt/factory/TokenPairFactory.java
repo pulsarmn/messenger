@@ -30,7 +30,7 @@ public class TokenPairFactory {
         return new TokenPairResponse(accessToken, refreshToken);
     }
 
-    private JwtClaims buildClaims(User user) { // TOOD: extract to JwtClaimsBuilder or JwtClaimsFactory
+    private JwtClaims buildClaims(User user) { // TODO: extract to JwtClaimsBuilder or JwtClaimsFactory
         return JwtClaims.builder()
                 .subject(user.getId().toString())
                 .claim("username", user.getUsername())
@@ -40,7 +40,7 @@ public class TokenPairFactory {
     }
 
     private Instant getExpirationTime() {
-        return Instant.now(clock).plus(10, ChronoUnit.MINUTES); // TODO - extract this hard code
+        return Instant.now(clock).plus(1440, ChronoUnit.MINUTES); // TODO - extract this hard code
     }
 
     private Instant getIssueTime() {

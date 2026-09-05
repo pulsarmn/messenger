@@ -1,4 +1,4 @@
-package ru.pulsarmn.messenger.controller;
+package ru.pulsarmn.messenger.controller.rest;
 
 import jakarta.validation.constraints.Size;
 import org.springframework.data.domain.Page;

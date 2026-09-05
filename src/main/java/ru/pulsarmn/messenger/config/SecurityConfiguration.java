@@ -50,6 +50,7 @@ public class SecurityConfiguration {
     private void configureRequestMatchers(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry configurer) {
         configurer
                 .requestMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/ws-stomp").permitAll()
                 .anyRequest().authenticated();
     }
 

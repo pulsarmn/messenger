@@ -13,15 +13,24 @@ public class JwtAuthenticationConverter {
 
     public Authentication toAuthentication(HttpServletRequest request, JwtVerificationResult verificationResult) {
         return switch (verificationResult) {
-            case JwtVerificationResult.Success success -> createAuthentication(success, request);
+            case JwtVerificationResult.Success success -> {
+                UsernamePasswordAuthenticationToken authentication = createAuthentication(success);
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                yield authentication;
+            }
             case JwtVerificationResult.Failure _ -> null;
         };
     }
 
-    private Authentication createAuthentication(JwtVerificationResult.Success verificationResult, HttpServletRequest request) {
+    public Authentication toAuthentication(JwtVerificationResult verificationResult) {
+        return switch (verificationResult) {
+            case JwtVerificationResult.Success success -> createAuthentication(success);
+            case JwtVerificationResult.Failure _ -> null;
+        };
+    }
+
+    private UsernamePasswordAuthenticationToken createAuthentication(JwtVerificationResult.Success verificationResult) {
         UserPrincipal userPrincipal = UserPrincipal.of(verificationResult.userId(), verificationResult.username(), verificationResult.roles());
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userPrincipal, null, userPrincipal.getAuthorities());
-        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        return authentication;
+        return new UsernamePasswordAuthenticationToken(userPrincipal, null, userPrincipal.getAuthorities());
     }
 }
