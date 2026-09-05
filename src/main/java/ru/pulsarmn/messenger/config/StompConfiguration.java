@@ -29,7 +29,7 @@ public class StompConfiguration implements WebSocketMessageBrokerConfigurer {
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.setApplicationDestinationPrefixes("/app")
                 .setUserDestinationPrefix("/user")
-                .enableSimpleBroker("/topic");
+                .enableSimpleBroker("/topic", "/queue");
     }
 
     @Override
