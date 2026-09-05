@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep Changelog](https://keepachangelog.com)
 
+## [0.4.0] - 2026-09-05
+
+### Added
+- **New API**: add a STOMP endpoint to send messages in real-time
+  - `SEND /chats/{chatId}/send-message`
+
 ## [0.3.0] - 2026-08-23
 
 ### Added
