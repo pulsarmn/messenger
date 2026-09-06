@@ -11,10 +11,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.pulsarmn.messenger.dto.response.ErrorResponse;
-import ru.pulsarmn.messenger.exception.BadCredentialsException;
-import ru.pulsarmn.messenger.exception.ChatMemberNotFoundException;
-import ru.pulsarmn.messenger.exception.UserAlreadyExistsException;
-import ru.pulsarmn.messenger.exception.UserNotFoundException;
+import ru.pulsarmn.messenger.exception.*;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -29,6 +26,16 @@ public class GlobalExceptionHandler {
 
     public GlobalExceptionHandler(Clock clock) {
         this.clock = clock;
+    }
+
+    @ExceptionHandler(MessageOwnershipException.class)
+    ResponseEntity<ErrorResponse> handleMessageOwnershipException(HttpServletRequest request) {
+        return buildResponse(HttpStatus.FORBIDDEN, "The current user does not own this message", request);
+    }
+
+    @ExceptionHandler(MessageNotFoundException.class)
+    ResponseEntity<ErrorResponse> handleMessageNotFoundException(HttpServletRequest request) {
+        return buildResponse(HttpStatus.NOT_FOUND, "Invalid message id", request);
     }
 
     @ExceptionHandler(ChatMemberNotFoundException.class)
