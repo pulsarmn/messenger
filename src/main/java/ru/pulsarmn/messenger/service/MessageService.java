@@ -4,10 +4,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.pulsarmn.messenger.dto.MessageCreationResult;
 import ru.pulsarmn.messenger.dto.request.MessageCreationRequest;
+import ru.pulsarmn.messenger.dto.request.MessageUpdateRequest;
 import ru.pulsarmn.messenger.dto.response.CursorPageResponse;
 import ru.pulsarmn.messenger.dto.response.MessageResponse;
 import ru.pulsarmn.messenger.entity.*;
 import ru.pulsarmn.messenger.exception.ChatMemberNotFoundException;
+import ru.pulsarmn.messenger.exception.MessageNotFoundException;
+import ru.pulsarmn.messenger.exception.MessageOwnershipException;
 import ru.pulsarmn.messenger.repository.ChatMemberRepository;
 import ru.pulsarmn.messenger.repository.MessageRepository;
 
@@ -61,20 +64,38 @@ public class MessageService {
         if (request.messageType() == MessageType.TEXT) {
             Message message = buildMessage(chatMember, request);
             message = messageRepository.saveAndFlush(message);
-            return buildResult(message, chatId);
+            return buildResult(message);
         } else {
             // TODO: other message types
             return null;
         }
     }
 
-    private MessageCreationResult buildResult(Message message, UUID chatId) {
-        List<ChatMember> chatMembers = chatMemberRepository.findAllByChatId(chatId);
+    private MessageCreationResult buildResult(Message message) {
+        List<ChatMember> chatMembers = chatMemberRepository.findAllByChatId(message.getChat().getId());
         MessageResponse messageResponse = mapToResponse(message);
         List<String> recipientUsernames = chatMembers.stream()
                 .map(cm -> cm.getUser().getUsername())
                 .collect(Collectors.toList());
         return new MessageCreationResult(messageResponse, recipientUsernames);
+    }
+
+    @Transactional
+    public MessageCreationResult updateMessage(UUID userId, UUID messageId, MessageUpdateRequest request) {
+        Message message = messageRepository.findById(messageId)
+                .orElseThrow(() -> new MessageNotFoundException("Message with id '%s' was not found".formatted(messageId)));
+        if (!userId.equals(message.getSender().getId())) {
+            throw new MessageOwnershipException("The user with id '%s' is not the owner of the message with id '%s'".formatted(userId, message.getId()));
+        }
+
+        UUID chatId = message.getChat().getId();
+        ChatMemberId chatMemberId = new ChatMemberId(chatId, userId);
+        chatMemberRepository.findById(chatMemberId)
+                .orElseThrow(() -> new ChatMemberNotFoundException("The user with id '%s' is not a member of the chat with id '%s' or the chat is not exists".formatted(userId, chatId)));
+
+        message.setText(request.text());
+        message = messageRepository.saveAndFlush(message);
+        return buildResult(message);
     }
 
     private Message buildMessage(ChatMember chatMember, MessageCreationRequest request) {
