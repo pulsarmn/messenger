@@ -1,0 +1,4 @@
+databaseChangeLog:
+  - include:
+      relativeToChangelogFile: true
+      file: changesets/2026_09_06_index_on_messages_table.sql

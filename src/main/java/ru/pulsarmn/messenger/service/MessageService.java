@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.pulsarmn.messenger.dto.MessageCreationResult;
 import ru.pulsarmn.messenger.dto.request.MessageCreationRequest;
+import ru.pulsarmn.messenger.dto.response.CursorPageResponse;
 import ru.pulsarmn.messenger.dto.response.MessageResponse;
 import ru.pulsarmn.messenger.entity.*;
 import ru.pulsarmn.messenger.exception.ChatMemberNotFoundException;
@@ -21,9 +22,34 @@ public class MessageService {
     private final MessageRepository messageRepository;
     private final ChatMemberRepository chatMemberRepository;
 
+    private static final int MESSAGES_LIMIT = 50;
+
     public MessageService(MessageRepository messageRepository, ChatMemberRepository chatMemberRepository) {
         this.messageRepository = messageRepository;
         this.chatMemberRepository = chatMemberRepository;
+    }
+
+    public CursorPageResponse<MessageResponse> getMessages(UUID userId, UUID chatId, UUID cursorId) {
+        ChatMemberId chatMemberId = new ChatMemberId(chatId, userId);
+        chatMemberRepository.findById(chatMemberId)
+                .orElseThrow(() -> new ChatMemberNotFoundException("The user with id '%s' is not a member of the chat with id '%s' or the chat is not exists".formatted(userId, chatId)));
+
+        List<Message> messages;
+        if (cursorId == null) {
+            messages = messageRepository.findPartByChatId(chatId, MESSAGES_LIMIT + 1);
+        } else {
+            messages = messageRepository.findPartByChatIdAndCursor(chatId, cursorId, MESSAGES_LIMIT + 1);
+        }
+        return buildPageResponse(messages);
+    }
+
+    private CursorPageResponse<MessageResponse> buildPageResponse(List<Message> messages) {
+        List<MessageResponse> responses = messages.stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+        UUID nextCursor = messages.isEmpty() ? null : messages.getLast().getId();
+        boolean hasNext = messages.size() > MESSAGES_LIMIT;
+        return new CursorPageResponse<>(responses, nextCursor, hasNext);
     }
 
     @Transactional
@@ -44,7 +70,7 @@ public class MessageService {
 
     private MessageCreationResult buildResult(Message message, UUID chatId) {
         List<ChatMember> chatMembers = chatMemberRepository.findAllByChatId(chatId);
-        MessageResponse messageResponse = mapToResponse(message, chatId);
+        MessageResponse messageResponse = mapToResponse(message);
         List<String> recipientUsernames = chatMembers.stream()
                 .map(cm -> cm.getUser().getUsername())
                 .collect(Collectors.toList());
@@ -61,9 +87,9 @@ public class MessageService {
                 .build();
     }
 
-    private MessageResponse mapToResponse(Message message, UUID chatId) {
+    private MessageResponse mapToResponse(Message message) {
         return MessageResponse.builder()
-                .chatId(chatId)
+                .chatId(message.getChat().getId())
                 .senderId(message.getSender().getId())
                 .messageId(message.getId())
                 .text(message.getText())
