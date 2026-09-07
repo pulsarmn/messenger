@@ -2,8 +2,9 @@ package ru.pulsarmn.messenger.mapper;
 
 
 import org.junit.jupiter.api.Test;
-import ru.pulsarmn.messenger.dto.request.RegistrationRequest;
-import ru.pulsarmn.messenger.entity.User;
+import ru.pulsarmn.messenger.auth.RegistrationRequest;
+import ru.pulsarmn.messenger.user.User;
+import ru.pulsarmn.messenger.user.UserMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
