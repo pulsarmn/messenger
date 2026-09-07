@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.pulsarmn.messenger.dto.MessageCreationResult;
 import ru.pulsarmn.messenger.dto.MessageEvent;
+import ru.pulsarmn.messenger.dto.request.MessageCreationRequest;
 import ru.pulsarmn.messenger.dto.request.MessageUpdateRequest;
 import ru.pulsarmn.messenger.security.UserPrincipal;
 import ru.pulsarmn.messenger.service.MessageService;
@@ -28,6 +29,18 @@ public class MessageRestController {
     public MessageRestController(MessageService messageService, SimpMessagingTemplate messagingTemplate) {
         this.messageService = messageService;
         this.messagingTemplate = messagingTemplate;
+    }
+
+    @PostMapping("/chats/{chatId}/messages")
+    ResponseEntity<Void> createMessage(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                       @PathVariable UUID chatId,
+                                       @Validated @RequestBody MessageCreationRequest request) {
+        MessageCreationResult result = messageService.createMessage(userPrincipal.getUserId(), chatId, request);
+        MessageEvent messageEvent = new MessageEvent(MessageEvent.EventType.MESSAGE_CREATED, result.messageResponse());
+        for (String username : result.recipientUsernames()) {
+            messagingTemplate.convertAndSendToUser(username, MESSAGES_TOPIC, messageEvent);
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PatchMapping("/messages/{id}")
