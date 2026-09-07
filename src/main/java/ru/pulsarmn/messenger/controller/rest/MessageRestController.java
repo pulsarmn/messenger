@@ -1,6 +1,5 @@
 package ru.pulsarmn.messenger.controller.rest;
 
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -45,13 +44,24 @@ public class MessageRestController {
 
     @PatchMapping("/messages/{id}")
     ResponseEntity<Void> updateMessage(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                       @PathVariable UUID id,
+                                       @PathVariable("id") UUID messageId,
                                        @Validated @RequestBody MessageUpdateRequest request) {
-        MessageCreationResult result = messageService.updateMessage(userPrincipal.getUserId(), id, request);
+        MessageCreationResult result = messageService.updateMessage(userPrincipal.getUserId(), messageId, request);
         MessageEvent messageEvent = new MessageEvent(MessageEvent.EventType.MESSAGE_UPDATED, result.messageResponse());
         for (String username : result.recipientUsernames()) {
             messagingTemplate.convertAndSendToUser(username, MESSAGES_TOPIC, messageEvent);
         }
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @DeleteMapping("/messages/{id}")
+    ResponseEntity<Void> deleteMessage(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                       @PathVariable("id") UUID messageId) {
+        MessageCreationResult result = messageService.deleteMessage(userPrincipal.getUserId(), messageId);
+        MessageEvent messageEvent = new MessageEvent(MessageEvent.EventType.MESSAGE_DELETED, result.messageResponse());
+        for (String username : result.recipientUsernames()) {
+            messagingTemplate.convertAndSendToUser(username, MESSAGES_TOPIC, messageEvent);
+        }
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

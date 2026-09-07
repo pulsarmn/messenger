@@ -98,6 +98,23 @@ public class MessageService {
         return buildResult(message);
     }
 
+    @Transactional
+    public MessageCreationResult deleteMessage(UUID userId, UUID messageId) {
+        Message message = messageRepository.findById(messageId)
+                .orElseThrow(() -> new MessageNotFoundException("Message with id '%s' was not found".formatted(messageId)));
+        if (!userId.equals(message.getSender().getId())) {
+            throw new MessageOwnershipException("The user with id '%s' is not the owner of the message with id '%s'".formatted(userId, message.getId()));
+        }
+
+        UUID chatId = message.getChat().getId();
+        ChatMemberId chatMemberId = new ChatMemberId(chatId, userId);
+        chatMemberRepository.findById(chatMemberId)
+                .orElseThrow(() -> new ChatMemberNotFoundException("The user with id '%s' is not a member of the chat with id '%s' or the chat is not exists".formatted(userId, chatId)));
+
+        messageRepository.delete(message);
+        return buildResult(message);
+    }
+
     private Message buildMessage(ChatMember chatMember, MessageCreationRequest request) {
         return Message.builder()
                 .chat(chatMember.getChat())
