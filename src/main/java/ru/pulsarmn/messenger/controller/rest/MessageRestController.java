@@ -10,6 +10,8 @@ import ru.pulsarmn.messenger.dto.MessageCreationResult;
 import ru.pulsarmn.messenger.dto.MessageEvent;
 import ru.pulsarmn.messenger.dto.request.MessageCreationRequest;
 import ru.pulsarmn.messenger.dto.request.MessageUpdateRequest;
+import ru.pulsarmn.messenger.dto.response.CursorPageResponse;
+import ru.pulsarmn.messenger.dto.response.MessageResponse;
 import ru.pulsarmn.messenger.security.UserPrincipal;
 import ru.pulsarmn.messenger.service.MessageService;
 
@@ -28,6 +30,15 @@ public class MessageRestController {
     public MessageRestController(MessageService messageService, SimpMessagingTemplate messagingTemplate) {
         this.messageService = messageService;
         this.messagingTemplate = messagingTemplate;
+    }
+
+    @GetMapping("/{chatId}/messages")
+    ResponseEntity<CursorPageResponse<MessageResponse>> getMessages(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                                                    @PathVariable UUID chatId,
+                                                                    @RequestParam(value = "cursor", required = false) UUID cursorId) {
+        CursorPageResponse<MessageResponse> response = messageService.getMessages(userPrincipal.getUserId(), chatId, cursorId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(response);
     }
 
     @PostMapping("/chats/{chatId}/messages")
