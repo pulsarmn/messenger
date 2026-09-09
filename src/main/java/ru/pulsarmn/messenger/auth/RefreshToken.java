@@ -23,8 +23,7 @@ public class RefreshToken {
     private String tokenHash;
 
     @JoinColumn(name = "user_id")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private User user;
+    private UUID userId;
 
     @Column(name = "expires_at")
     private Instant expiresAt;
@@ -35,10 +34,10 @@ public class RefreshToken {
 
     public RefreshToken() {}
 
-    public RefreshToken(UUID id, String tokenHash, User user, Instant expiresAt, Instant createdAt) {
+    public RefreshToken(UUID id, String tokenHash, UUID userId, Instant expiresAt, Instant createdAt) {
         this.id = id;
         this.tokenHash = tokenHash;
-        this.user = user;
+        this.userId = userId;
         this.expiresAt = expiresAt;
         this.createdAt = createdAt;
     }
@@ -59,12 +58,12 @@ public class RefreshToken {
         this.tokenHash = tokenHash;
     }
 
-    public User getUser() {
-        return user;
+    public UUID getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(UUID userId) {
+        this.userId = userId;
     }
 
     public Instant getExpiresAt() {
@@ -86,7 +85,7 @@ public class RefreshToken {
     public static class Builder {
         private UUID id;
         private String tokenHash;
-        private User user;
+        private UUID userId;
         private Instant expiresAt;
         private Instant createdAt;
 
@@ -100,8 +99,8 @@ public class RefreshToken {
             return this;
         }
 
-        public Builder user(User user) {
-            this.user = user;
+        public Builder userId(UUID userId) {
+            this.userId = userId;
             return this;
         }
 
@@ -116,7 +115,7 @@ public class RefreshToken {
         }
 
         public RefreshToken build() {
-            return new RefreshToken(id, tokenHash, user, expiresAt, createdAt);
+            return new RefreshToken(id, tokenHash, userId, expiresAt, createdAt);
         }
     }
 
@@ -128,12 +127,12 @@ public class RefreshToken {
     public boolean equals(Object object) {
         if (object == null || getClass() != object.getClass()) return false;
         RefreshToken that = (RefreshToken) object;
-        return Objects.equals(id, that.id) && Objects.equals(tokenHash, that.tokenHash) && Objects.equals(expiresAt, that.expiresAt) && Objects.equals(createdAt, that.createdAt);
+        return Objects.equals(id, that.id) && Objects.equals(tokenHash, that.tokenHash) && Objects.equals(userId, that.userId) && Objects.equals(expiresAt, that.expiresAt) && Objects.equals(createdAt, that.createdAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tokenHash, expiresAt, createdAt);
+        return Objects.hash(id, tokenHash, userId, expiresAt, createdAt);
     }
 
     @Override
@@ -141,6 +140,7 @@ public class RefreshToken {
         return "RefreshToken{" +
                 "id=" + id +
                 ", tokenHash='" + tokenHash + '\'' +
+                ", userId=" + userId +
                 ", expiresAt=" + expiresAt +
                 ", createdAt=" + createdAt +
                 '}';

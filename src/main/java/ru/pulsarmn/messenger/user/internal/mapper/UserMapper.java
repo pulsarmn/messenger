@@ -47,6 +47,7 @@ public class UserMapper {
         return UserResponse.builder()
                 .id(user.getId())
                 .username(user.getUsername())
+                .passwordHash(user.getPasswordHash())
                 .phoneNumber(user.getPasswordHash())
                 .displayName(user.getDisplayName())
                 .birthdate(user.getBirthdate())

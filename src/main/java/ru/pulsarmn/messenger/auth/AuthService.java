@@ -3,26 +3,24 @@ package ru.pulsarmn.messenger.auth;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.pulsarmn.messenger.user.internal.domain.User;
-import ru.pulsarmn.messenger.user.api.exception.UserAlreadyExistsException;
-import ru.pulsarmn.messenger.user.api.exception.UserNotFoundException;
 import ru.pulsarmn.messenger.infrastructure.security.jwt.factory.TokenPairFactory;
-import ru.pulsarmn.messenger.user.internal.mapper.UserMapper;
-import ru.pulsarmn.messenger.user.internal.repository.UserRepository;
+import ru.pulsarmn.messenger.user.api.UserApi;
+import ru.pulsarmn.messenger.user.api.dto.request.UserCreateRequest;
+import ru.pulsarmn.messenger.user.api.dto.response.UserResponse;
 
 
 @Service
 public class AuthService {
 
-    private final UserMapper userMapper;
-    private final UserRepository userRepository;
+    private final UserApi userApi;
+    private final AuthUserMapper authUserMapper;
     private final PasswordEncoder passwordEncoder;
     private final TokenPairFactory tokenPairFactory;
     private final RefreshTokenService refreshTokenService;
 
-    public AuthService(UserMapper userMapper, UserRepository userRepository, PasswordEncoder passwordEncoder, TokenPairFactory tokenPairFactory, RefreshTokenService refreshTokenService) {
-        this.userMapper = userMapper;
-        this.userRepository = userRepository;
+    public AuthService(UserApi userApi, AuthUserMapper authUserMapper, PasswordEncoder passwordEncoder, TokenPairFactory tokenPairFactory, RefreshTokenService refreshTokenService) {
+        this.userApi = userApi;
+        this.authUserMapper = authUserMapper;
         this.passwordEncoder = passwordEncoder;
         this.tokenPairFactory = tokenPairFactory;
         this.refreshTokenService = refreshTokenService;
@@ -33,17 +31,15 @@ public class AuthService {
         checkUserExistence(request);
         validatePasswordsMatch(request);
 
-        User user = mapToUser(request);
-        user = userRepository.saveAndFlush(user);
+        UserCreateRequest userCreateRequest = mapToUser(request);
+        UserResponse user = userApi.createUser(userCreateRequest);
 
         return tokenPairFactory.createTokenPair(user);
     }
 
     private void checkUserExistence(RegistrationRequest request) {
-        String username = request.username();
-        if (userRepository.existsByUsername(username)) {
-            throw new UserAlreadyExistsException("User with username '%s' already exists".formatted(username));
-        }
+        userApi.findUserByUsername(request.username())
+                .orElseThrow(() -> new BadCredentialsException("Invalid username or password"));
     }
 
     private void validatePasswordsMatch(RegistrationRequest request) {
@@ -56,19 +52,19 @@ public class AuthService {
         return (request.password()).equals(request.passwordConfirmation());
     }
 
-    private User mapToUser(RegistrationRequest request) {
+    private UserCreateRequest mapToUser(RegistrationRequest request) {
         String encodedPassword = passwordEncoder.encode(request.password());
-        return userMapper.mapToEntity(request, encodedPassword);
+        return authUserMapper.mapToCreateRequest(request, encodedPassword);
     }
 
     @Transactional
     public TokenPairResponse authenticate(AuthenticationRequest request) {
         String username = request.username();
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User with username '%s' was not found".formatted(username)));
+        UserResponse user = userApi.findUserByUsername(username)
+                .orElseThrow(() -> new BadCredentialsException("Invalid username or password"));
 
         String rawPassword = request.password();
-        String encodedPassword = user.getPasswordHash();
+        String encodedPassword = user.passwordHash();
         if (!passwordEncoder.matches(rawPassword, encodedPassword)) {
             throw new PasswordMismatchException("Passwords do not match");
         }
@@ -81,9 +77,10 @@ public class AuthService {
         RefreshToken refreshToken = refreshTokenService.find(request.oldRefreshToken());
         checkRefreshTokenExpiration(refreshToken);
 
-        User user = refreshToken.getUser();
         refreshTokenService.delete(refreshToken);
-        return tokenPairFactory.createTokenPair(user);
+        return userApi.findUserById(refreshToken.getUserId())
+                .map(tokenPairFactory::createTokenPair)
+                .orElseThrow(() -> new BadCredentialsException("Invalid refresh token"));
     }
 
     private void checkRefreshTokenExpiration(RefreshToken refreshToken) {

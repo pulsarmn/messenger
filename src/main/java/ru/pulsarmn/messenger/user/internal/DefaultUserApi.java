@@ -10,6 +10,7 @@ import ru.pulsarmn.messenger.user.internal.mapper.UserMapper;
 import ru.pulsarmn.messenger.user.internal.repository.UserRepository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 
 @Component
@@ -32,7 +33,13 @@ public class DefaultUserApi implements UserApi  {
     }
 
     @Override
-    public Optional<UserResponse> findAuthDataByUsername(String username) {
+    public Optional<UserResponse> findUserById(UUID userId) {
+        return userRepository.findById(userId)
+                .map(userMapper::mapToResponse);
+    }
+
+    @Override
+    public Optional<UserResponse> findUserByUsername(String username) {
         return userRepository.findByUsername(username)
                 .map(userMapper::mapToResponse);
     }

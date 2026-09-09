@@ -1,11 +1,11 @@
 package ru.pulsarmn.messenger.infrastructure.security.jwt.factory;
 
 import org.springframework.stereotype.Component;
-import ru.pulsarmn.messenger.auth.RefreshToken;
-import ru.pulsarmn.messenger.user.internal.domain.User;
-import ru.pulsarmn.messenger.infrastructure.security.jwt.RefreshTokenGenerator;
 import ru.pulsarmn.messenger.auth.HashService;
+import ru.pulsarmn.messenger.auth.RefreshToken;
 import ru.pulsarmn.messenger.auth.RefreshTokenService;
+import ru.pulsarmn.messenger.infrastructure.security.jwt.RefreshTokenGenerator;
+import ru.pulsarmn.messenger.user.api.dto.response.UserResponse;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -31,19 +31,19 @@ public class RefreshTokenFactory {
         this.refreshTokenGenerator = refreshTokenGenerator;
     }
 
-    public String createRefreshToken(User user) {
+    public String createRefreshToken(UserResponse user) {
         byte[] rawRefreshTokenBytes = refreshTokenGenerator.generate(DEFAULT_REFRESH_TOKEN_LENGTH);
         RefreshToken refreshToken = buildRefreshToken(rawRefreshTokenBytes, user);
         refreshTokenService.save(refreshToken);
         return Base64.getUrlEncoder().encodeToString(rawRefreshTokenBytes);
     }
 
-    private RefreshToken buildRefreshToken(byte[] rawRefreshTokenBytes, User user) {
+    private RefreshToken buildRefreshToken(byte[] rawRefreshTokenBytes, UserResponse response) {
         byte[] hashedRefreshTokenBytes = hashService.hash(rawRefreshTokenBytes);
         String hashedRefreshToken = convertHashToHex(hashedRefreshTokenBytes);
         return RefreshToken.builder()
                 .tokenHash(hashedRefreshToken)
-                .user(user)
+                .userId(response.id())
                 .expiresAt(getRefreshTokenExpirationTime())
                 .build();
     }
