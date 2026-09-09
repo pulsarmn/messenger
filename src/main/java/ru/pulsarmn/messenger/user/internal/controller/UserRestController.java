@@ -28,9 +28,8 @@ public class UserRestController {
     }
 
     @GetMapping("/search")
-    ResponseEntity<Page<UserSearchResponse>> findUsersByName(
-            @RequestParam @Size(min = 2) String query,
-            @PageableDefault(size = 10, sort = "username") Pageable pageable) {
+    ResponseEntity<Page<UserSearchResponse>> findUsersByName(@RequestParam @Size(min = 2) String query,
+                                                             @PageableDefault(sort = "username") Pageable pageable) {
         Page<UserSearchResponse> usersPage = userService.findUsers(query, pageable);
         return ResponseEntity.ok(usersPage);
     }
