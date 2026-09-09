@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.pulsarmn.messenger.infrastructure.security.jwt.factory.TokenPairFactory;
 import ru.pulsarmn.messenger.user.api.UserApi;
 import ru.pulsarmn.messenger.user.api.dto.request.UserCreateRequest;
-import ru.pulsarmn.messenger.user.api.dto.response.UserResponse;
+import ru.pulsarmn.messenger.user.api.dto.response.UserDto;
 
 
 @Service
@@ -32,7 +32,7 @@ public class AuthService {
         validatePasswordsMatch(request);
 
         UserCreateRequest userCreateRequest = mapToUser(request);
-        UserResponse user = userApi.createUser(userCreateRequest);
+        UserDto user = userApi.createUser(userCreateRequest);
 
         return tokenPairFactory.createTokenPair(user);
     }
@@ -60,7 +60,7 @@ public class AuthService {
     @Transactional
     public TokenPairResponse authenticate(AuthenticationRequest request) {
         String username = request.username();
-        UserResponse user = userApi.findUserByUsername(username)
+        UserDto user = userApi.findUserByUsername(username)
                 .orElseThrow(() -> new BadCredentialsException("Invalid username or password"));
 
         String rawPassword = request.password();

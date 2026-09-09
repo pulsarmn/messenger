@@ -3,7 +3,7 @@ package ru.pulsarmn.messenger.user.internal.mapper;
 import org.springframework.stereotype.Component;
 import ru.pulsarmn.messenger.auth.RegistrationRequest;
 import ru.pulsarmn.messenger.user.api.dto.request.UserCreateRequest;
-import ru.pulsarmn.messenger.user.api.dto.response.UserResponse;
+import ru.pulsarmn.messenger.user.api.dto.response.UserDto;
 import ru.pulsarmn.messenger.user.internal.domain.User;
 import ru.pulsarmn.messenger.user.internal.dto.response.UserProfileResponse;
 import ru.pulsarmn.messenger.user.internal.dto.response.UserSearchResponse;
@@ -11,14 +11,6 @@ import ru.pulsarmn.messenger.user.internal.dto.response.UserSearchResponse;
 
 @Component
 public class UserMapper {
-
-    public User mapToEntity(RegistrationRequest request, String passwordHash) {
-        return User.builder()
-                .username(request.username())
-                .passwordHash(passwordHash)
-                .displayName("Default name") // TODO: extract this logic
-                .build();
-    }
 
     public UserSearchResponse mapToSearchResponse(User user) {
         return new UserSearchResponse(user.getUsername());
@@ -43,8 +35,8 @@ public class UserMapper {
                 .build();
     }
 
-    public UserResponse mapToResponse(User user) {
-        return UserResponse.builder()
+    public UserDto mapToResponse(User user) {
+        return UserDto.builder()
                 .id(user.getId())
                 .username(user.getUsername())
                 .passwordHash(user.getPasswordHash())

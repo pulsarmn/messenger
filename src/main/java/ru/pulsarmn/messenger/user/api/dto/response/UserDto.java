@@ -5,14 +5,14 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 
-public record UserResponse(UUID id,
-                           String username,
-                           String passwordHash,
-                           String phoneNumber,
-                           String displayName,
-                           LocalDate birthdate,
-                           Instant createdAt,
-                           Instant updatedAt) {
+public record UserDto(UUID id,
+                      String username,
+                      String passwordHash,
+                      String phoneNumber,
+                      String displayName,
+                      LocalDate birthdate,
+                      Instant createdAt,
+                      Instant updatedAt) {
 
     public static class Builder {
         private UUID id;
@@ -64,8 +64,8 @@ public record UserResponse(UUID id,
             return this;
         }
 
-        public UserResponse build() {
-            return new UserResponse(id, username, passwordHash, phoneNumber, displayName, birthdate, createdAt, updatedAt);
+        public UserDto build() {
+            return new UserDto(id, username, passwordHash, phoneNumber, displayName, birthdate, createdAt, updatedAt);
         }
     }
 
