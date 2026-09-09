@@ -2,7 +2,7 @@ package ru.pulsarmn.messenger.chat;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
-import ru.pulsarmn.messenger.user.User;
+import ru.pulsarmn.messenger.user.internal.domain.User;
 
 import java.time.Instant;
 import java.util.Objects;

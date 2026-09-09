@@ -5,7 +5,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 import ru.pulsarmn.messenger.chat.Chat;
-import ru.pulsarmn.messenger.user.User;
+import ru.pulsarmn.messenger.user.internal.domain.User;
 
 import java.time.Instant;
 import java.util.Objects;

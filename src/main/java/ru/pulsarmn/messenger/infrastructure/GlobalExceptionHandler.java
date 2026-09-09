@@ -14,8 +14,8 @@ import ru.pulsarmn.messenger.auth.BadCredentialsException;
 import ru.pulsarmn.messenger.chat.ChatMemberNotFoundException;
 import ru.pulsarmn.messenger.message.MessageNotFoundException;
 import ru.pulsarmn.messenger.message.MessageOwnershipException;
-import ru.pulsarmn.messenger.user.UserAlreadyExistsException;
-import ru.pulsarmn.messenger.user.UserNotFoundException;
+import ru.pulsarmn.messenger.user.api.exception.UserAlreadyExistsException;
+import ru.pulsarmn.messenger.user.api.exception.UserNotFoundException;
 
 import java.time.Clock;
 import java.time.Instant;

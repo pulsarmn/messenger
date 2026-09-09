@@ -3,8 +3,8 @@ package ru.pulsarmn.messenger.chat;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.pulsarmn.messenger.user.User;
-import ru.pulsarmn.messenger.user.UserService;
+import ru.pulsarmn.messenger.user.internal.domain.User;
+import ru.pulsarmn.messenger.user.internal.service.UserService;
 
 import java.util.List;
 import java.util.UUID;

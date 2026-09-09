@@ -1,9 +1,18 @@
-package ru.pulsarmn.messenger.user;
+package ru.pulsarmn.messenger.user.internal.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.pulsarmn.messenger.user.internal.domain.User;
+import ru.pulsarmn.messenger.user.api.dto.request.BirthdateUpdateRequest;
+import ru.pulsarmn.messenger.user.api.dto.request.DisplayNameUpdateRequest;
+import ru.pulsarmn.messenger.user.api.dto.request.UsernameUpdateRequest;
+import ru.pulsarmn.messenger.user.api.dto.response.UserProfileResponse;
+import ru.pulsarmn.messenger.user.api.dto.response.UserSearchResponse;
+import ru.pulsarmn.messenger.user.api.exception.UserNotFoundException;
+import ru.pulsarmn.messenger.user.internal.mapper.UserMapper;
+import ru.pulsarmn.messenger.user.internal.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.util.Objects;

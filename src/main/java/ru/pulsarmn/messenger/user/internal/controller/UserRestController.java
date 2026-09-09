@@ -1,4 +1,4 @@
-package ru.pulsarmn.messenger.user;
+package ru.pulsarmn.messenger.user.internal.controller;
 
 import jakarta.validation.constraints.Size;
 import org.springframework.data.domain.Page;
@@ -9,6 +9,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.pulsarmn.messenger.infrastructure.UserPrincipal;
+import ru.pulsarmn.messenger.user.api.dto.request.BirthdateUpdateRequest;
+import ru.pulsarmn.messenger.user.api.dto.request.DisplayNameUpdateRequest;
+import ru.pulsarmn.messenger.user.api.dto.request.UsernameUpdateRequest;
+import ru.pulsarmn.messenger.user.api.dto.response.UserProfileResponse;
+import ru.pulsarmn.messenger.user.api.dto.response.UserSearchResponse;
+import ru.pulsarmn.messenger.user.internal.service.UserService;
 
 
 @RestController

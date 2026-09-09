@@ -7,12 +7,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.pulsarmn.messenger.auth.*;
-import ru.pulsarmn.messenger.user.User;
-import ru.pulsarmn.messenger.user.UserAlreadyExistsException;
-import ru.pulsarmn.messenger.user.UserNotFoundException;
+import ru.pulsarmn.messenger.user.internal.domain.User;
+import ru.pulsarmn.messenger.user.api.exception.UserAlreadyExistsException;
+import ru.pulsarmn.messenger.user.api.exception.UserNotFoundException;
 import ru.pulsarmn.messenger.infrastructure.security.jwt.factory.TokenPairFactory;
-import ru.pulsarmn.messenger.user.UserMapper;
-import ru.pulsarmn.messenger.user.UserRepository;
+import ru.pulsarmn.messenger.user.internal.mapper.UserMapper;
+import ru.pulsarmn.messenger.user.internal.repository.UserRepository;
 
 import java.util.Optional;
 import java.util.UUID;

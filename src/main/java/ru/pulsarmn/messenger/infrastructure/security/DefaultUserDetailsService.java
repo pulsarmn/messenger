@@ -3,7 +3,7 @@ package ru.pulsarmn.messenger.infrastructure.security;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import ru.pulsarmn.messenger.user.UserRepository;
+import ru.pulsarmn.messenger.user.internal.repository.UserRepository;
 
 
 public class DefaultUserDetailsService implements UserDetailsService {

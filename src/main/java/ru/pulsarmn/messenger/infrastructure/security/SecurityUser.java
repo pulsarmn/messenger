@@ -3,7 +3,7 @@ package ru.pulsarmn.messenger.infrastructure.security;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ru.pulsarmn.messenger.user.User;
+import ru.pulsarmn.messenger.user.internal.domain.User;
 
 import java.util.Collection;
 import java.util.List;

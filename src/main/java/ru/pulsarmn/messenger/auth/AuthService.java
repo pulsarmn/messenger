@@ -3,12 +3,12 @@ package ru.pulsarmn.messenger.auth;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.pulsarmn.messenger.user.User;
-import ru.pulsarmn.messenger.user.UserAlreadyExistsException;
-import ru.pulsarmn.messenger.user.UserNotFoundException;
+import ru.pulsarmn.messenger.user.internal.domain.User;
+import ru.pulsarmn.messenger.user.api.exception.UserAlreadyExistsException;
+import ru.pulsarmn.messenger.user.api.exception.UserNotFoundException;
 import ru.pulsarmn.messenger.infrastructure.security.jwt.factory.TokenPairFactory;
-import ru.pulsarmn.messenger.user.UserMapper;
-import ru.pulsarmn.messenger.user.UserRepository;
+import ru.pulsarmn.messenger.user.internal.mapper.UserMapper;
+import ru.pulsarmn.messenger.user.internal.repository.UserRepository;
 
 
 @Service

@@ -2,7 +2,7 @@ package ru.pulsarmn.messenger.infrastructure.security.jwt.factory;
 
 import org.springframework.stereotype.Component;
 import ru.pulsarmn.messenger.auth.TokenPairResponse;
-import ru.pulsarmn.messenger.user.User;
+import ru.pulsarmn.messenger.user.internal.domain.User;
 import ru.pulsarmn.messenger.infrastructure.security.jwt.JwtClaims;
 
 import java.time.Clock;

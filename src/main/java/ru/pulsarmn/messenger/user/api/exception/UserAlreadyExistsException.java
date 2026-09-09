@@ -1,4 +1,4 @@
-package ru.pulsarmn.messenger.user;
+package ru.pulsarmn.messenger.user.api.exception;
 
 
 public class UserAlreadyExistsException extends RuntimeException {
