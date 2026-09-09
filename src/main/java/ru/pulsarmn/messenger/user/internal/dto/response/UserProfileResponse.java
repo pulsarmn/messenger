@@ -1,4 +1,4 @@
-package ru.pulsarmn.messenger.user.api.dto.response;
+package ru.pulsarmn.messenger.user.internal.dto.response;
 
 import java.time.LocalDate;
 
