@@ -1,7 +1,10 @@
-package ru.pulsarmn.messenger.auth;
+package ru.pulsarmn.messenger.auth.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.pulsarmn.messenger.auth.exception.BadCredentialsException;
+import ru.pulsarmn.messenger.auth.domain.RefreshToken;
+import ru.pulsarmn.messenger.auth.repository.RefreshTokenRepository;
 
 import java.time.Clock;
 import java.time.Instant;

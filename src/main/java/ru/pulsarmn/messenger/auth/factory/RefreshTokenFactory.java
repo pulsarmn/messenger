@@ -1,10 +1,10 @@
-package ru.pulsarmn.messenger.infrastructure.security.jwt.factory;
+package ru.pulsarmn.messenger.auth.factory;
 
 import org.springframework.stereotype.Component;
-import ru.pulsarmn.messenger.auth.HashService;
-import ru.pulsarmn.messenger.auth.RefreshToken;
-import ru.pulsarmn.messenger.auth.RefreshTokenService;
-import ru.pulsarmn.messenger.infrastructure.security.jwt.RefreshTokenGenerator;
+import ru.pulsarmn.messenger.auth.service.HashService;
+import ru.pulsarmn.messenger.auth.domain.RefreshToken;
+import ru.pulsarmn.messenger.auth.service.RefreshTokenService;
+import ru.pulsarmn.messenger.auth.util.RefreshTokenGenerator;
 import ru.pulsarmn.messenger.user.api.dto.response.UserDto;
 
 import java.time.Clock;

@@ -1,9 +1,17 @@
-package ru.pulsarmn.messenger.auth;
+package ru.pulsarmn.messenger.auth.service;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.pulsarmn.messenger.infrastructure.security.jwt.factory.TokenPairFactory;
+import ru.pulsarmn.messenger.auth.domain.RefreshToken;
+import ru.pulsarmn.messenger.auth.dto.request.AuthenticationRequest;
+import ru.pulsarmn.messenger.auth.dto.request.RefreshTokenRequest;
+import ru.pulsarmn.messenger.auth.dto.request.RegistrationRequest;
+import ru.pulsarmn.messenger.auth.dto.response.TokenPairResponse;
+import ru.pulsarmn.messenger.auth.exception.BadCredentialsException;
+import ru.pulsarmn.messenger.auth.exception.PasswordMismatchException;
+import ru.pulsarmn.messenger.auth.mapper.AuthUserMapper;
+import ru.pulsarmn.messenger.auth.factory.TokenPairFactory;
 import ru.pulsarmn.messenger.user.api.UserApi;
 import ru.pulsarmn.messenger.user.api.dto.request.UserCreateRequest;
 import ru.pulsarmn.messenger.user.api.dto.response.UserDto;

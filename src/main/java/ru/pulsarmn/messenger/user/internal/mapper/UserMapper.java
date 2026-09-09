@@ -1,7 +1,6 @@
 package ru.pulsarmn.messenger.user.internal.mapper;
 
 import org.springframework.stereotype.Component;
-import ru.pulsarmn.messenger.auth.RegistrationRequest;
 import ru.pulsarmn.messenger.user.api.dto.request.UserCreateRequest;
 import ru.pulsarmn.messenger.user.api.dto.response.UserDto;
 import ru.pulsarmn.messenger.user.internal.domain.User;

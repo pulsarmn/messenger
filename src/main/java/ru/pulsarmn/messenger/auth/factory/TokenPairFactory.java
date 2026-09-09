@@ -1,7 +1,7 @@
-package ru.pulsarmn.messenger.infrastructure.security.jwt.factory;
+package ru.pulsarmn.messenger.auth.factory;
 
 import org.springframework.stereotype.Component;
-import ru.pulsarmn.messenger.auth.TokenPairResponse;
+import ru.pulsarmn.messenger.auth.dto.response.TokenPairResponse;
 import ru.pulsarmn.messenger.infrastructure.security.jwt.JwtClaims;
 import ru.pulsarmn.messenger.user.api.dto.response.UserDto;
 

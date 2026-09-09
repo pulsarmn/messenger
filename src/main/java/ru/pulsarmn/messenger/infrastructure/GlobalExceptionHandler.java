@@ -10,7 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.pulsarmn.messenger.auth.BadCredentialsException;
+import ru.pulsarmn.messenger.auth.exception.BadCredentialsException;
 import ru.pulsarmn.messenger.chat.ChatMemberNotFoundException;
 import ru.pulsarmn.messenger.message.MessageNotFoundException;
 import ru.pulsarmn.messenger.message.MessageOwnershipException;

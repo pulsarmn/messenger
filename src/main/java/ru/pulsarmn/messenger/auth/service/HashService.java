@@ -1,4 +1,4 @@
-package ru.pulsarmn.messenger.auth;
+package ru.pulsarmn.messenger.auth.service;
 
 import org.springframework.stereotype.Service;
 

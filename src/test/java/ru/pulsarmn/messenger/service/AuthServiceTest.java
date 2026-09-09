@@ -1,25 +1,7 @@
 package ru.pulsarmn.messenger.service;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import ru.pulsarmn.messenger.auth.*;
-import ru.pulsarmn.messenger.user.internal.domain.User;
-import ru.pulsarmn.messenger.user.api.exception.UserAlreadyExistsException;
-import ru.pulsarmn.messenger.user.api.exception.UserNotFoundException;
-import ru.pulsarmn.messenger.infrastructure.security.jwt.factory.TokenPairFactory;
-import ru.pulsarmn.messenger.user.internal.mapper.UserMapper;
-import ru.pulsarmn.messenger.user.internal.repository.UserRepository;
-
-import java.util.Optional;
-import java.util.UUID;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.*;
 
 
 //@ExtendWith(MockitoExtension.class)

@@ -1,4 +1,4 @@
-package ru.pulsarmn.messenger.infrastructure.security.jwt.factory;
+package ru.pulsarmn.messenger.auth.factory;
 
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;

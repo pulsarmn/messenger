@@ -1,4 +1,4 @@
-package ru.pulsarmn.messenger.auth;
+package ru.pulsarmn.messenger.auth.exception;
 
 
 public class BadCredentialsException extends RuntimeException {

@@ -1,4 +1,4 @@
-package ru.pulsarmn.messenger.infrastructure.security.jwt;
+package ru.pulsarmn.messenger.auth.util;
 
 import org.springframework.stereotype.Component;
 

@@ -1,9 +1,8 @@
-package ru.pulsarmn.messenger.auth;
+package ru.pulsarmn.messenger.auth.domain;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UuidGenerator;
-import ru.pulsarmn.messenger.user.internal.domain.User;
 
 import java.time.Instant;
 import java.util.Objects;
