@@ -9,23 +9,18 @@ repositories {
 }
 
 dependencies {
+    implementation(project(":infrastructure"))
+}
+
+dependencies {
     implementation(libs.spring.boot.starter.web)
-    implementation(libs.spring.boot.starter.test)
     implementation(libs.spring.boot.starter.data.jpa)
     implementation(libs.spring.boot.starter.security)
-    implementation(libs.spring.boot.starter.websocket)
-    implementation(libs.spring.boot.starter.liquibase)
     implementation(libs.spring.boot.starter.validation)
 }
 
 dependencies {
     runtimeOnly(libs.postgresql.driver)
-    implementation(libs.bouncy.castle)
-    implementation(libs.nimbus.jose.jwt)
-}
-
-tasks.withType<JavaCompile>().configureEach {
-    options.compilerArgs.add("-parameters")
 }
 
 java {
@@ -34,6 +29,14 @@ java {
     }
 }
 
-tasks.withType<Test>().configureEach {
+tasks.test {
     useJUnitPlatform()
+}
+
+tasks.bootJar {
+    enabled = false
+}
+
+tasks.jar {
+    enabled = true
 }
