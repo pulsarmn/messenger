@@ -7,6 +7,6 @@ import org.springframework.stereotype.Component;
 public class DirectChatMapper {
 
     public ChatResponse mapToResponse(DirectChat directChat) {
-        return new ChatResponse(directChat.getChat().getId());
+        return new ChatResponse(directChat.getChatId());
     }
 }

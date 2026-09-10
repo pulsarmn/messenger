@@ -21,7 +21,8 @@ public class ChatRestController {
     }
 
     @PostMapping("/direct")
-    ResponseEntity<ChatResponse> createChat(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody ChatCreationRequest request) {
+    ResponseEntity<ChatResponse> createChat(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                            @RequestBody ChatCreationRequest request) {
         ChatResponse response = directChatService.getOrCreateDirectChat(userPrincipal.getUserId(), request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(response);

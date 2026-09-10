@@ -1,5 +1,6 @@
 package ru.pulsarmn.messenger.chat;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 import java.util.Objects;
@@ -9,7 +10,10 @@ import java.util.UUID;
 @Embeddable
 public class DirectChatId {
 
+    @Column(name = "lower_user_id")
     private UUID lowerUserId;
+
+    @Column(name = "higher_user_id")
     private UUID higherUserId;
 
     public DirectChatId() {

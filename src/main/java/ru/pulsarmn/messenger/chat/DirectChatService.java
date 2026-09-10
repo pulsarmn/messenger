@@ -3,7 +3,9 @@ package ru.pulsarmn.messenger.chat;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.pulsarmn.messenger.user.internal.domain.User;
+import ru.pulsarmn.messenger.user.api.UserApi;
+import ru.pulsarmn.messenger.user.api.dto.response.UserDto;
+import ru.pulsarmn.messenger.user.api.exception.UserNotFoundException;
 import ru.pulsarmn.messenger.user.internal.service.UserService;
 
 import java.util.List;
@@ -13,14 +15,14 @@ import java.util.UUID;
 @Service
 public class DirectChatService {
 
-    private final UserService userService;
+    private final UserApi userApi;
     private final ChatRepository chatRepository;
     private final DirectChatMapper directChatMapper;
     private final ChatMemberRepository chatMemberRepository;
     private final DirectChatRepository directChatRepository;
 
-    public DirectChatService(UserService userService, ChatRepository chatRepository, DirectChatMapper directChatMapper, ChatMemberRepository chatMemberRepository, DirectChatRepository directChatRepository) {
-        this.userService = userService;
+    public DirectChatService(UserApi userApi, ChatRepository chatRepository, DirectChatMapper directChatMapper, ChatMemberRepository chatMemberRepository, DirectChatRepository directChatRepository) {
+        this.userApi = userApi;
         this.chatRepository = chatRepository;
         this.directChatMapper = directChatMapper;
         this.chatMemberRepository = chatMemberRepository;
@@ -42,19 +44,21 @@ public class DirectChatService {
 
     private ChatResponse createDirectChat(DirectChatId directChatId) {
         try {
-            User lowerUser = userService.getUserById(directChatId.getLowerUserId());
-            User higherUser = userService.getUserById(directChatId.getHigherUserId());
+            UserDto lowerUser = userApi.findUserById(directChatId.getLowerUserId())
+                    .orElseThrow(() -> new UserNotFoundException("User with id '%s' was not found".formatted(directChatId.getLowerUserId())));
+            UserDto higherUser = userApi.findUserById(directChatId.getHigherUserId())
+                    .orElseThrow(() -> new UserNotFoundException("User with id '%s' was not found".formatted(directChatId.getHigherUserId())));
 
             Chat chat = chatRepository.save(Chat.builder().type(Chat.Type.DIRECT).build());
 
             List<ChatMember> chatMembers = List.of(
-                    ChatMember.builder().user(lowerUser).chat(chat).role(ChatMember.ChatRole.MEMBER).build(),
-                    ChatMember.builder().user(higherUser).chat(chat).role(ChatMember.ChatRole.MEMBER).build()
+                    ChatMember.builder().userId(lowerUser.id()).chat(chat).role(ChatMember.ChatRole.MEMBER).build(),
+                    ChatMember.builder().userId(higherUser.id()).chat(chat).role(ChatMember.ChatRole.MEMBER).build()
             );
             chatMemberRepository.saveAll(chatMembers);
 
             DirectChat directChat = directChatRepository.save(
-                    DirectChat.builder().lowerUser(lowerUser).higherUser(higherUser).chat(chat).build());
+                    DirectChat.builder().lowerUserId(lowerUser.id()).higherUserId(higherUser.id()).chat(chat).build());
 
             return directChatMapper.mapToResponse(directChat);
         } catch (DataIntegrityViolationException e) {

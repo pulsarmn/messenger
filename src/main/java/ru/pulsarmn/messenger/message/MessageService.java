@@ -4,11 +4,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.pulsarmn.messenger.chat.ChatMember;
 import ru.pulsarmn.messenger.chat.ChatMemberId;
-import ru.pulsarmn.messenger.infrastructure.CursorPageResponse;
 import ru.pulsarmn.messenger.chat.ChatMemberNotFoundException;
 import ru.pulsarmn.messenger.chat.ChatMemberRepository;
+import ru.pulsarmn.messenger.infrastructure.CursorPageResponse;
+import ru.pulsarmn.messenger.user.api.UserApi;
+import ru.pulsarmn.messenger.user.api.dto.response.UserDto;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -16,12 +19,14 @@ import java.util.stream.Collectors;
 @Service
 public class MessageService {
 
+    private final UserApi userApi;
     private final MessageRepository messageRepository;
     private final ChatMemberRepository chatMemberRepository;
 
     private static final int MESSAGES_LIMIT = 50;
 
-    public MessageService(MessageRepository messageRepository, ChatMemberRepository chatMemberRepository) {
+    public MessageService(UserApi userApi, MessageRepository messageRepository, ChatMemberRepository chatMemberRepository) {
+        this.userApi = userApi;
         this.messageRepository = messageRepository;
         this.chatMemberRepository = chatMemberRepository;
     }
@@ -66,10 +71,13 @@ public class MessageService {
     }
 
     private MessageCreationResult buildResult(Message message) {
-        List<ChatMember> chatMembers = chatMemberRepository.findAllByChatId(message.getChat().getId());
+        List<ChatMember> chatMembers = chatMemberRepository.findAllByChatId(message.getChatId());
         MessageResponse messageResponse = mapToResponse(message);
         List<String> recipientUsernames = chatMembers.stream()
-                .map(cm -> cm.getUser().getUsername())
+                .map(cm -> userApi.findUserById(cm.getUserId()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(UserDto::username)
                 .collect(Collectors.toList());
         return new MessageCreationResult(messageResponse, recipientUsernames);
     }
@@ -78,11 +86,11 @@ public class MessageService {
     public MessageCreationResult updateMessage(UUID userId, UUID messageId, MessageUpdateRequest request) {
         Message message = messageRepository.findById(messageId)
                 .orElseThrow(() -> new MessageNotFoundException("Message with id '%s' was not found".formatted(messageId)));
-        if (!userId.equals(message.getSender().getId())) {
+        if (!userId.equals(message.getSenderId())) {
             throw new MessageOwnershipException("The user with id '%s' is not the owner of the message with id '%s'".formatted(userId, message.getId()));
         }
 
-        UUID chatId = message.getChat().getId();
+        UUID chatId = message.getChatId();
         ChatMemberId chatMemberId = new ChatMemberId(chatId, userId);
         chatMemberRepository.findById(chatMemberId)
                 .orElseThrow(() -> new ChatMemberNotFoundException("The user with id '%s' is not a member of the chat with id '%s' or the chat is not exists".formatted(userId, chatId)));
@@ -96,11 +104,11 @@ public class MessageService {
     public MessageCreationResult deleteMessage(UUID userId, UUID messageId) {
         Message message = messageRepository.findById(messageId)
                 .orElseThrow(() -> new MessageNotFoundException("Message with id '%s' was not found".formatted(messageId)));
-        if (!userId.equals(message.getSender().getId())) {
+        if (!userId.equals(message.getSenderId())) {
             throw new MessageOwnershipException("The user with id '%s' is not the owner of the message with id '%s'".formatted(userId, message.getId()));
         }
 
-        UUID chatId = message.getChat().getId();
+        UUID chatId = message.getChatId();
         ChatMemberId chatMemberId = new ChatMemberId(chatId, userId);
         chatMemberRepository.findById(chatMemberId)
                 .orElseThrow(() -> new ChatMemberNotFoundException("The user with id '%s' is not a member of the chat with id '%s' or the chat is not exists".formatted(userId, chatId)));
@@ -111,8 +119,8 @@ public class MessageService {
 
     private Message buildMessage(ChatMember chatMember, MessageCreationRequest request) {
         return Message.builder()
-                .chat(chatMember.getChat())
-                .sender(chatMember.getUser())
+                .chatId(chatMember.getChat().getId())
+                .senderId(chatMember.getUserId())
                 .type(request.messageType())
                 .text(request.text())
                 .status(MessageStatus.SENT)
@@ -121,8 +129,8 @@ public class MessageService {
 
     private MessageResponse mapToResponse(Message message) {
         return MessageResponse.builder()
-                .chatId(message.getChat().getId())
-                .senderId(message.getSender().getId())
+                .chatId(message.getChatId())
+                .senderId(message.getSenderId())
                 .messageId(message.getId())
                 .text(message.getText())
                 .status(message.getStatus())

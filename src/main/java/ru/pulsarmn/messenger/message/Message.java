@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
-import ru.pulsarmn.messenger.chat.Chat;
-import ru.pulsarmn.messenger.user.internal.domain.User;
 
 import java.time.Instant;
 import java.util.Objects;
@@ -22,12 +20,10 @@ public class Message {
     private UUID id;
 
     @JoinColumn(name = "chat_id")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Chat chat;
+    private UUID chatId;
 
     @JoinColumn(name = "sender_id")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private User sender;
+    private UUID senderId;
 
     @Column(name = "type")
     @Enumerated(value = EnumType.STRING)
@@ -60,10 +56,10 @@ public class Message {
     public Message() {
     }
 
-    public Message(UUID id, Chat chat, User sender, MessageType type, String text, Attachment attachment, MessageStatus status, Instant createdAt, Instant updatedAt) {
+    public Message(UUID id, UUID chatId, UUID senderId, MessageType type, String text, Attachment attachment, MessageStatus status, Instant createdAt, Instant updatedAt) {
         this.id = id;
-        this.chat = chat;
-        this.sender = sender;
+        this.chatId = chatId;
+        this.senderId = senderId;
         this.type = type;
         this.text = text;
         this.attachment = attachment;
@@ -80,20 +76,20 @@ public class Message {
         this.id = id;
     }
 
-    public Chat getChat() {
-        return chat;
+    public UUID getChatId() {
+        return chatId;
     }
 
-    public void setChat(Chat chat) {
-        this.chat = chat;
+    public void setChatId(UUID chatId) {
+        this.chatId = chatId;
     }
 
-    public User getSender() {
-        return sender;
+    public UUID getSenderId() {
+        return senderId;
     }
 
-    public void setSender(User sender) {
-        this.sender = sender;
+    public void setSenderId(UUID senderId) {
+        this.senderId = senderId;
     }
 
     public MessageType getType() {
@@ -146,8 +142,8 @@ public class Message {
 
     public static class Builder {
         private UUID id;
-        private Chat chat;
-        private User sender;
+        private UUID chatId;
+        private UUID senderId;
         private MessageType type;
         private String text;
         private Attachment attachment;
@@ -160,13 +156,13 @@ public class Message {
             return this;
         }
 
-        public Builder chat(Chat chat) {
-            this.chat = chat;
+        public Builder chatId(UUID chatId) {
+            this.chatId = chatId;
             return this;
         }
 
-        public Builder sender(User sender) {
-            this.sender = sender;
+        public Builder senderId(UUID senderId) {
+            this.senderId = senderId;
             return this;
         }
 
@@ -201,7 +197,7 @@ public class Message {
         }
 
         public Message build() {
-            return new Message(id, chat, sender, type, text, attachment, status, createdAt, updatedAt);
+            return new Message(id, chatId, senderId, type, text, attachment, status, createdAt, updatedAt);
         }
     }
 
@@ -213,19 +209,20 @@ public class Message {
     public boolean equals(Object object) {
         if (object == null || getClass() != object.getClass()) return false;
         Message message = (Message) object;
-        return Objects.equals(id, message.id) && type == message.type && Objects.equals(text, message.text) && Objects.equals(attachment, message.attachment) && status == message.status && Objects.equals(createdAt, message.createdAt) && Objects.equals(updatedAt, message.updatedAt);
+        return Objects.equals(id, message.id) && Objects.equals(chatId, message.chatId) && Objects.equals(senderId, message.senderId) && type == message.type && Objects.equals(text, message.text) && Objects.equals(attachment, message.attachment) && status == message.status && Objects.equals(createdAt, message.createdAt) && Objects.equals(updatedAt, message.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, type, text, attachment, status, createdAt, updatedAt);
+        return Objects.hash(id, chatId, senderId, type, text, attachment, status, createdAt, updatedAt);
     }
 
     @Override
     public String toString() {
         return "Message{" +
                 "id=" + id +
-                ", sender=" + sender +
+                ", chatId=" + chatId +
+                ", senderId=" + senderId +
                 ", type=" + type +
                 ", text='" + text + '\'' +
                 ", attachment=" + attachment +

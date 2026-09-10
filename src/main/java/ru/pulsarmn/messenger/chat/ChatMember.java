@@ -6,6 +6,7 @@ import ru.pulsarmn.messenger.user.internal.domain.User;
 
 import java.time.Instant;
 import java.util.Objects;
+import java.util.UUID;
 
 
 @Entity
@@ -18,10 +19,6 @@ public class ChatMember {
     @MapsId("chatId")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Chat chat;
-
-    @MapsId("userId")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private User user;
 
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
@@ -39,9 +36,9 @@ public class ChatMember {
 
     public ChatMember() {}
 
-    public ChatMember(Chat chat, User user, ChatRole role, Instant joinedAt) {
+    public ChatMember(Chat chat, UUID userId, ChatRole role, Instant joinedAt) {
+        this.id = new ChatMemberId(chat.getId(), userId);
         this.chat = chat;
-        this.user = user;
         this.role = role;
         this.joinedAt = joinedAt;
     }
@@ -62,12 +59,12 @@ public class ChatMember {
         this.chat = chat;
     }
 
-    public User getUser() {
-        return user;
+    public UUID getChatId() {
+        return id != null ? id.getChatId() : chat.getId();
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public UUID getUserId() {
+        return id == null ? null : id.getUserId();
     }
 
     public ChatRole getRole() {
@@ -88,7 +85,7 @@ public class ChatMember {
 
     public static class Builder {
         private Chat chat;
-        private User user;
+        private UUID userId;
         private ChatRole role = ChatRole.MEMBER;
         private Instant joinedAt;
 
@@ -97,8 +94,8 @@ public class ChatMember {
             return this;
         }
 
-        public Builder user(User user) {
-            this.user = user;
+        public Builder userId(UUID userId) {
+            this.userId = userId;
             return this;
         }
 
@@ -113,7 +110,7 @@ public class ChatMember {
         }
 
         public ChatMember build() {
-            return new ChatMember(chat, user, role, joinedAt);
+            return new ChatMember(chat, userId, role, joinedAt);
         }
     }
 

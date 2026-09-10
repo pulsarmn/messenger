@@ -2,10 +2,10 @@ package ru.pulsarmn.messenger.chat;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
-import ru.pulsarmn.messenger.user.internal.domain.User;
 
 import java.time.Instant;
 import java.util.Objects;
+import java.util.UUID;
 
 
 @Entity
@@ -15,16 +15,6 @@ public class DirectChat {
     @EmbeddedId
     private DirectChatId id;
 
-    @MapsId("lowerUserId")
-    @JoinColumn(name = "lower_user_id")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private User lowerUser;
-
-    @MapsId("higherUserId")
-    @JoinColumn(name = "higher_user_id")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private User higherUser;
-
     @JoinColumn(name = "chat_id")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Chat chat;
@@ -33,12 +23,11 @@ public class DirectChat {
     @Column(name = "created_at")
     private Instant createdAt;
 
-    public DirectChat() {}
+    public DirectChat() {
+    }
 
-    public DirectChat(DirectChatId id, User lowerUser, User higherUser, Chat chat, Instant createdAt) {
-        this.id = id;
-        this.lowerUser = lowerUser;
-        this.higherUser = higherUser;
+    public DirectChat(UUID lowerUserId, UUID higherUserId, Chat chat, Instant createdAt) {
+        this.id = new DirectChatId(lowerUserId, higherUserId);
         this.chat = chat;
         this.createdAt = createdAt;
     }
@@ -51,28 +40,16 @@ public class DirectChat {
         this.id = id;
     }
 
-    public User getLowerUser() {
-        return lowerUser;
-    }
-
-    public void setLowerUser(User lowerUser) {
-        this.lowerUser = lowerUser;
-    }
-
-    public User getHigherUser() {
-        return higherUser;
-    }
-
-    public void setHigherUser(User higherUser) {
-        this.higherUser = higherUser;
-    }
-
     public Chat getChat() {
         return chat;
     }
 
     public void setChat(Chat chat) {
         this.chat = chat;
+    }
+
+    public UUID getChatId() {
+        return chat != null ? chat.getId() : null;
     }
 
     public Instant getCreatedAt() {
@@ -84,18 +61,18 @@ public class DirectChat {
     }
 
     public static class Builder {
-        private User lowerUser;
-        private User higherUser;
+        private UUID lowerUserId;
+        private UUID higherUserId;
         private Chat chat;
         private Instant createdAt;
 
-        public Builder lowerUser(User lowerUser) {
-            this.lowerUser = lowerUser;
+        public Builder lowerUserId(UUID lowerUserId) {
+            this.lowerUserId = lowerUserId;
             return this;
         }
 
-        public Builder higherUser(User higherUser) {
-            this.higherUser = higherUser;
+        public Builder higherUserId(UUID higherUserId) {
+            this.higherUserId = higherUserId;
             return this;
         }
 
@@ -110,7 +87,7 @@ public class DirectChat {
         }
 
         public DirectChat build() {
-            return new DirectChat(null, lowerUser, higherUser, chat, createdAt);
+            return new DirectChat(lowerUserId, higherUserId, chat, createdAt);
         }
     }
 
@@ -122,21 +99,20 @@ public class DirectChat {
     public boolean equals(Object object) {
         if (object == null || getClass() != object.getClass()) return false;
         DirectChat that = (DirectChat) object;
-        return Objects.equals(id, that.id) && Objects.equals(lowerUser, that.lowerUser) && Objects.equals(higherUser, that.higherUser) && Objects.equals(chat, that.chat);
+        return Objects.equals(id, that.id) && Objects.equals(chat, that.chat) && Objects.equals(createdAt, that.createdAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, lowerUser, higherUser, chat);
+        return Objects.hash(id, chat, createdAt);
     }
 
     @Override
     public String toString() {
         return "DirectChat{" +
                 "id=" + id +
-                ", lowerUser=" + lowerUser +
-                ", higherUser=" + higherUser +
                 ", chat=" + chat +
+                ", createdAt=" + createdAt +
                 '}';
     }
 }
