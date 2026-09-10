@@ -1,4 +1,7 @@
-package ru.pulsarmn.messenger.message;
+package ru.pulsarmn.messenger.message.dto.response;
+
+import ru.pulsarmn.messenger.message.domain.MessageStatus;
+import ru.pulsarmn.messenger.message.domain.MessageType;
 
 import java.time.Instant;
 import java.util.UUID;

@@ -1,4 +1,4 @@
-package ru.pulsarmn.messenger.message;
+package ru.pulsarmn.messenger.message.exception;
 
 
 public class MessageNotFoundException extends RuntimeException {

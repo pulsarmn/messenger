@@ -1,4 +1,4 @@
-package ru.pulsarmn.messenger.message;
+package ru.pulsarmn.messenger.message.domain;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;

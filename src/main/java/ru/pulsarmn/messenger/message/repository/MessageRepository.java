@@ -1,7 +1,8 @@
-package ru.pulsarmn.messenger.message;
+package ru.pulsarmn.messenger.message.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import ru.pulsarmn.messenger.message.domain.Message;
 
 import java.util.List;
 import java.util.UUID;

@@ -1,4 +1,4 @@
-package ru.pulsarmn.messenger.message;
+package ru.pulsarmn.messenger.message.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +8,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.pulsarmn.messenger.infrastructure.CursorPageResponse;
 import ru.pulsarmn.messenger.infrastructure.UserPrincipal;
+import ru.pulsarmn.messenger.message.dto.MessageCreationResult;
+import ru.pulsarmn.messenger.message.dto.MessageEvent;
+import ru.pulsarmn.messenger.message.dto.request.MessageCreationRequest;
+import ru.pulsarmn.messenger.message.dto.request.MessageUpdateRequest;
+import ru.pulsarmn.messenger.message.dto.response.MessageResponse;
+import ru.pulsarmn.messenger.message.service.MessageService;
 
 import java.util.UUID;
 

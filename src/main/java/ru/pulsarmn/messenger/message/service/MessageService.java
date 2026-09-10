@@ -1,4 +1,4 @@
-package ru.pulsarmn.messenger.message;
+package ru.pulsarmn.messenger.message.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -7,6 +7,16 @@ import ru.pulsarmn.messenger.chat.ChatMemberId;
 import ru.pulsarmn.messenger.chat.ChatMemberNotFoundException;
 import ru.pulsarmn.messenger.chat.ChatMemberRepository;
 import ru.pulsarmn.messenger.infrastructure.CursorPageResponse;
+import ru.pulsarmn.messenger.message.domain.Message;
+import ru.pulsarmn.messenger.message.domain.MessageStatus;
+import ru.pulsarmn.messenger.message.domain.MessageType;
+import ru.pulsarmn.messenger.message.dto.MessageCreationResult;
+import ru.pulsarmn.messenger.message.dto.request.MessageCreationRequest;
+import ru.pulsarmn.messenger.message.dto.request.MessageUpdateRequest;
+import ru.pulsarmn.messenger.message.dto.response.MessageResponse;
+import ru.pulsarmn.messenger.message.exception.MessageNotFoundException;
+import ru.pulsarmn.messenger.message.exception.MessageOwnershipException;
+import ru.pulsarmn.messenger.message.repository.MessageRepository;
 import ru.pulsarmn.messenger.user.api.UserApi;
 import ru.pulsarmn.messenger.user.api.dto.response.UserDto;
 
