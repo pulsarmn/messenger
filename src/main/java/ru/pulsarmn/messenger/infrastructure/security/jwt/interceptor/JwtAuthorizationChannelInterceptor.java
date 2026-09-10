@@ -1,4 +1,4 @@
-package ru.pulsarmn.messenger.infrastructure.interceptor;
+package ru.pulsarmn.messenger.infrastructure.security.jwt.interceptor;
 
 import org.jspecify.annotations.Nullable;
 import org.springframework.messaging.Message;

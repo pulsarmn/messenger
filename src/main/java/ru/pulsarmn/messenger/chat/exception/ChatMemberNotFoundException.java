@@ -1,4 +1,4 @@
-package ru.pulsarmn.messenger.chat;
+package ru.pulsarmn.messenger.chat.exception;
 
 
 public class ChatMemberNotFoundException extends RuntimeException {

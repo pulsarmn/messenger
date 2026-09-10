@@ -1,4 +1,4 @@
-package ru.pulsarmn.messenger.chat;
+package ru.pulsarmn.messenger.chat.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 

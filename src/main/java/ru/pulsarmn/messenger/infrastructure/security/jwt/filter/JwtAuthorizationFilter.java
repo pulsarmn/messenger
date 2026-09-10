@@ -1,4 +1,4 @@
-package ru.pulsarmn.messenger.infrastructure.security.jwt;
+package ru.pulsarmn.messenger.infrastructure.security.jwt.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -7,6 +7,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import ru.pulsarmn.messenger.infrastructure.security.jwt.JwtAuthenticationConverter;
+import ru.pulsarmn.messenger.infrastructure.security.jwt.JwtHeaderExtractor;
+import ru.pulsarmn.messenger.infrastructure.security.jwt.JwtVerificationResult;
+import ru.pulsarmn.messenger.infrastructure.security.jwt.JwtVerifier;
 
 import java.io.IOException;
 

@@ -1,12 +1,21 @@
-package ru.pulsarmn.messenger.chat;
+package ru.pulsarmn.messenger.chat.service;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.pulsarmn.messenger.chat.dto.request.ChatCreationRequest;
+import ru.pulsarmn.messenger.chat.dto.response.ChatResponse;
+import ru.pulsarmn.messenger.chat.mapper.DirectChatMapper;
+import ru.pulsarmn.messenger.chat.domain.Chat;
+import ru.pulsarmn.messenger.chat.domain.ChatMember;
+import ru.pulsarmn.messenger.chat.domain.DirectChat;
+import ru.pulsarmn.messenger.chat.domain.DirectChatId;
+import ru.pulsarmn.messenger.chat.repository.ChatMemberRepository;
+import ru.pulsarmn.messenger.chat.repository.ChatRepository;
+import ru.pulsarmn.messenger.chat.repository.DirectChatRepository;
 import ru.pulsarmn.messenger.user.api.UserApi;
 import ru.pulsarmn.messenger.user.api.dto.response.UserDto;
 import ru.pulsarmn.messenger.user.api.exception.UserNotFoundException;
-import ru.pulsarmn.messenger.user.internal.service.UserService;
 
 import java.util.List;
 import java.util.UUID;

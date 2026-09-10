@@ -1,4 +1,4 @@
-package ru.pulsarmn.messenger.chat;
+package ru.pulsarmn.messenger.chat.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.pulsarmn.messenger.chat.dto.request.ChatCreationRequest;
+import ru.pulsarmn.messenger.chat.dto.response.ChatResponse;
+import ru.pulsarmn.messenger.chat.service.DirectChatService;
 import ru.pulsarmn.messenger.infrastructure.UserPrincipal;
 
 

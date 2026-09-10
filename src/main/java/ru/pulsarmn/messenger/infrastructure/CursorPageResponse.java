@@ -8,5 +8,5 @@ public record CursorPageResponse<T>(
         List<T> items,
         UUID nextCursor,
         boolean hasNext
-        ) {
+) {
 }

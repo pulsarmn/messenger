@@ -2,10 +2,10 @@ package ru.pulsarmn.messenger.message.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.pulsarmn.messenger.chat.ChatMember;
-import ru.pulsarmn.messenger.chat.ChatMemberId;
-import ru.pulsarmn.messenger.chat.ChatMemberNotFoundException;
-import ru.pulsarmn.messenger.chat.ChatMemberRepository;
+import ru.pulsarmn.messenger.chat.domain.ChatMember;
+import ru.pulsarmn.messenger.chat.domain.ChatMemberId;
+import ru.pulsarmn.messenger.chat.exception.ChatMemberNotFoundException;
+import ru.pulsarmn.messenger.chat.repository.ChatMemberRepository;
 import ru.pulsarmn.messenger.infrastructure.CursorPageResponse;
 import ru.pulsarmn.messenger.message.domain.Message;
 import ru.pulsarmn.messenger.message.domain.MessageStatus;
