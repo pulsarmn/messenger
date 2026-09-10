@@ -11,9 +11,9 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.pulsarmn.messenger.auth.exception.BadCredentialsException;
-import ru.pulsarmn.messenger.chat.ChatMemberNotFoundException;
-import ru.pulsarmn.messenger.message.MessageNotFoundException;
-import ru.pulsarmn.messenger.message.MessageOwnershipException;
+import ru.pulsarmn.messenger.chat.exception.ChatMemberNotFoundException;
+import ru.pulsarmn.messenger.message.exception.MessageNotFoundException;
+import ru.pulsarmn.messenger.message.exception.MessageOwnershipException;
 import ru.pulsarmn.messenger.user.api.exception.UserAlreadyExistsException;
 import ru.pulsarmn.messenger.user.api.exception.UserNotFoundException;
 
