@@ -9,19 +9,19 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":user"))
-    implementation(project(":infrastructure"))
-}
-
-dependencies {
-    implementation(libs.spring.security.core)
     implementation(libs.spring.boot.starter.web)
+    implementation(libs.spring.boot.starter.test)
     implementation(libs.spring.boot.starter.data.jpa)
+    implementation(libs.spring.security.core)
+//    implementation(libs.spring.boot.starter.websocket)
+    implementation(libs.spring.boot.starter.liquibase)
     implementation(libs.spring.boot.starter.validation)
 }
 
 dependencies {
     runtimeOnly(libs.postgresql.driver)
+    implementation(libs.bouncy.castle)
+    implementation(libs.nimbus.jose.jwt)
 }
 
 java {
@@ -35,9 +35,6 @@ tasks.test {
 }
 
 tasks.bootJar {
-    enabled = false
-}
-
-tasks.jar {
     enabled = true
 }
+
