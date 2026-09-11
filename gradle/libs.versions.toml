@@ -14,6 +14,7 @@ spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-
 spring-boot-starter-websocket = { module = "org.springframework.boot:spring-boot-starter-websocket" }
 spring-boot-starter-liquibase = { module = "org.springframework.boot:spring-boot-starter-liquibase" }
 spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
+spring-boot-dependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
 
 postgresql-driver = { module = "org.postgresql:postgresql" }
 bouncy-castle = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bouncy-castle" }

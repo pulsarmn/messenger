@@ -1,11 +1,7 @@
-plugins {
-    java
-    alias(libs.plugins.spring.boot)
-    alias(libs.plugins.spring.dependency.management)
-}
+import org.springframework.boot.gradle.tasks.bundling.BootJar
 
-repositories {
-    mavenCentral()
+plugins {
+    alias(libs.plugins.spring.boot)
 }
 
 dependencies {
@@ -24,21 +20,10 @@ dependencies {
     runtimeOnly(libs.postgresql.driver)
 }
 
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(25)
-    }
-}
-
-tasks.test {
-    useJUnitPlatform()
-}
-
-tasks.bootJar {
+tasks.withType<BootJar> {
     enabled = true
 }
 
-tasks.jar {
+tasks.withType<Jar> {
     enabled = false
 }
