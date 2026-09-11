@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      relativeToChangelogFile: true
+      file: changesets/2026_09_11_chat_entity.sql
+  - include:
+      relativeToChangelogFile: true
+      file: changesets/2026_09_11_direct_chat_entity.sql
