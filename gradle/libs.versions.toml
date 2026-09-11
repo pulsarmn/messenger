@@ -5,6 +5,7 @@ spring-boot = "4.1.0"
 
 
 [libraries]
+spring-boot-starter = { module = "org.springframework.boot:spring-boot-starter" }
 spring-security-core = { module = "org.springframework.security:spring-security-core" }
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }

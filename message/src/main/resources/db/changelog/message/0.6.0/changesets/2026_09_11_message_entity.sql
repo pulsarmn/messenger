@@ -20,4 +20,4 @@ CREATE TABLE messages
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX idx_messages_chat_id_id ON messages (chat_id, id DESC);
+CREATE INDEX idx_messages_chat_id_created_at ON messages (chat_id, created_at DESC);

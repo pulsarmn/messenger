@@ -1,4 +1,4 @@
 databaseChangeLog:
   - include:
       relativeToChangelogFile: true
-      file: changesets/2026_08_25_message_entity.sql
+      file: changesets/2026_09_11_refresh_token_entity.sql

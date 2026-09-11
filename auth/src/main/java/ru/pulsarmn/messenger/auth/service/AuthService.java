@@ -36,7 +36,7 @@ public class AuthService {
 
     @Transactional
     public TokenPairResponse register(RegistrationRequest request) {
-        checkUserExistence(request);
+        ensureUserNotExists(request);
         validatePasswordsMatch(request);
 
         UserCreateRequest userCreateRequest = mapToUser(request);
@@ -45,9 +45,10 @@ public class AuthService {
         return tokenPairFactory.createTokenPair(user);
     }
 
-    private void checkUserExistence(RegistrationRequest request) {
-        userApi.findUserByUsername(request.username())
-                .orElseThrow(() -> new BadCredentialsException("Invalid username or password"));
+    private void ensureUserNotExists(RegistrationRequest request) {
+        if (userApi.findUserByUsername(request.username()).isPresent()) {
+            throw new BadCredentialsException("Invalid username or password");
+        }
     }
 
     private void validatePasswordsMatch(RegistrationRequest request) {
